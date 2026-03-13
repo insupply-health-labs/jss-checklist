@@ -60,6 +60,8 @@ export interface TableColumn {
   options?: Option[];
   readOnly?: boolean;
   computed?: boolean;
+  width?: string; 
+  calculate?: (row: Record<string, any>) => string | number;
 }
 
 export interface TableField extends BaseField {

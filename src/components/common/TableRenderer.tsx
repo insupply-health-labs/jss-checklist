@@ -27,6 +27,16 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], onChange }) => {
   const handleCellChange = (rowIndex: number, key: string, cellValue: any) => {
     const updatedRows = [...rows];
     updatedRows[rowIndex] = { ...updatedRows[rowIndex], [key]: cellValue };
+
+    // --- AUTO-CALCULATION LOGIC ---
+    // After updating the specific cell, check if any columns have a formula
+    // and run it using the newly updated row data.
+    field.columns.forEach((col) => {
+      if (col.calculate) {
+        updatedRows[rowIndex][col.key] = col.calculate(updatedRows[rowIndex]);
+      }
+    });
+
     onChange(calculateTableRows(field.name, updatedRows));
   };
 
@@ -54,60 +64,87 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], onChange }) => {
           <thead>
             <tr>
               {field.columns.map((col) => (
-                <th key={col.key}>
+                <th 
+                  key={col.key}
+                  // --- WIDTH LOGIC ---
+                  // Apply the custom width from the schema, default to auto
+                  style={{ width: col.width || "auto" }}
+                >
                   {col.label}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {rows.map((row, rowIndex) => (
-              <tr key={rowIndex}>
-                {field.columns.map((col) => (
-                  <td key={col.key}>
-                    {col.readOnly ? (
-                      /* FIX: Using a div instead of an input allows text wrapping.
-                        Uses the 'readonly-wrapper' class from App.css.
-                      */
-                      <div className="readonly-wrapper">
-                        {row[col.key] || ""}
-                      </div>
-                    ) : col.type === "textarea" ? (
-                      <textarea
-                        value={row[col.key] || ""}
-                        onChange={(e) => handleCellChange(rowIndex, col.key, e.target.value)}
-                        readOnly={col.computed}
-                      />
-                    ) : col.type === "select" ? (
-                      <select
-                        value={row[col.key] || ""}
-                        onChange={(e) => handleCellChange(rowIndex, col.key, e.target.value)}
-                        disabled={col.computed}
-                      >
-                        <option value="">Select...</option>
-                        {col.options?.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
-                      <input
-                        type={col.type}
-                        value={row[col.key] || ""}
-                        onChange={(e) => handleCellChange(rowIndex, col.key, e.target.value)}
-                        readOnly={col.computed}
-                      />
-                    )}
-                  </td>
-                ))}
-              </tr>
-            ))}
+            {rows.map((row, rowIndex) => {
+              // --- CATEGORY HEADER LOGIC (From Section 4) ---
+              if (row.isHeader) {
+                return (
+                  <tr key={rowIndex} className="table-category-header">
+                    <td 
+                      colSpan={field.columns.length} 
+                      style={{ 
+                        backgroundColor: "#e9ecef", 
+                        fontWeight: "bold", 
+                        padding: "10px",
+                        border: "1px solid #ccc" 
+                      }}
+                    >
+                      {row.tool}
+                    </td>
+                  </tr>
+                );
+              }
+
+              // --- STANDARD ROW RENDERING ---
+              return (
+                <tr key={rowIndex}>
+                  {field.columns.map((col) => (
+                    <td 
+                      key={col.key}
+                      // Apply width to data cells as well to ensure alignment
+                      style={{ width: col.width || "auto" }}
+                    >
+                      {col.readOnly ? (
+                        <div className="readonly-wrapper">
+                          {row[col.key] || ""}
+                        </div>
+                      ) : col.type === "textarea" ? (
+                        <textarea
+                          value={row[col.key] || ""}
+                          onChange={(e) => handleCellChange(rowIndex, col.key, e.target.value)}
+                          readOnly={col.computed}
+                        />
+                      ) : col.type === "select" ? (
+                        <select
+                          value={row[col.key] || ""}
+                          onChange={(e) => handleCellChange(rowIndex, col.key, e.target.value)}
+                          disabled={col.computed}
+                        >
+                          <option value="">Select...</option>
+                          {col.options?.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          type={col.type}
+                          value={row[col.key] || ""}
+                          onChange={(e) => handleCellChange(rowIndex, col.key, e.target.value)}
+                          readOnly={col.computed}
+                        />
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
 
-      {/* Hide Add Row button if it's a pre-filled guideline table */}
       {!isFixedTable && (
         <button type="button" onClick={addRow} style={{ marginTop: 10 }}>
           + Add Row
