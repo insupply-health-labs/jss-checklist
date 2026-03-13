@@ -26,6 +26,7 @@ export interface BaseField {
   name: string;
   label: string;
   type: FieldType;
+  className?: string,
   placeholder?: string;
   required?: boolean;
   helperText?: string;

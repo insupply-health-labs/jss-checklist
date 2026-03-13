@@ -14,12 +14,15 @@ interface Props {
 const FieldRenderer: React.FC<Props> = ({ field, value, formData, onChange }) => {
   if (!isFieldVisible(field, formData)) return null;
 
+  // This variable makes the className logic cleaner for each case
+  const containerClass = `field-container ${field.className || ""}`;
+
   switch (field.type) {
     case "text":
     case "number":
     case "date":
       return (
-        <div style={{ marginBottom: 16 }}>
+        <div className={containerClass} style={{ marginBottom: 16 }}>
           <label>{field.label}</label>
           <input
             type={field.type}
@@ -34,7 +37,7 @@ const FieldRenderer: React.FC<Props> = ({ field, value, formData, onChange }) =>
 
     case "textarea":
       return (
-        <div style={{ marginBottom: 16 }}>
+        <div className={containerClass} style={{ marginBottom: 16 }}>
           <label>{field.label}</label>
           <textarea
             value={value || ""}
@@ -48,7 +51,7 @@ const FieldRenderer: React.FC<Props> = ({ field, value, formData, onChange }) =>
 
     case "select":
       return (
-        <div style={{ marginBottom: 16 }}>
+        <div className={containerClass} style={{ marginBottom: 16 }}>
           <label>{field.label}</label>
           <select
             value={value || ""}
@@ -68,7 +71,7 @@ const FieldRenderer: React.FC<Props> = ({ field, value, formData, onChange }) =>
 
     case "radio":
       return (
-        <div style={{ marginBottom: 16 }}>
+        <div className={containerClass} style={{ marginBottom: 16 }}>
           <label>{field.label}</label>
           <div style={{ marginTop: 6 }}>
             {field.options?.map((option) => (
@@ -90,7 +93,7 @@ const FieldRenderer: React.FC<Props> = ({ field, value, formData, onChange }) =>
 
     case "checkbox":
       return (
-        <div style={{ marginBottom: 16 }}>
+        <div className={containerClass} style={{ marginBottom: 16 }}>
           <label>
             <input
               type="checkbox"
@@ -105,7 +108,7 @@ const FieldRenderer: React.FC<Props> = ({ field, value, formData, onChange }) =>
 
     case "multiselect":
       return (
-        <div style={{ marginBottom: 16 }}>
+        <div className={containerClass} style={{ marginBottom: 16 }}>
           <label>{field.label}</label>
           <div style={{ marginTop: 8 }}>
             {field.options?.map((option) => {
@@ -133,20 +136,24 @@ const FieldRenderer: React.FC<Props> = ({ field, value, formData, onChange }) =>
 
     case "table":
       return (
-        <TableRenderer
-          field={field as any}
-          value={value || []}
-          onChange={(rows) => onChange(field.name, rows)}
-        />
+        <div className={containerClass}>
+          <TableRenderer
+            field={field as any}
+            value={value || []}
+            onChange={(rows) => onChange(field.name, rows)}
+          />
+        </div>
       );
 
     case "sectionSummary":
       return (
-        <SectionSummaryTable
-          field={field as any}
-          value={value || []}
-          onChange={(rows) => onChange(field.name, rows)}
-        />
+        <div className={containerClass}>
+          <SectionSummaryTable
+            field={field as any}
+            value={value || []}
+            onChange={(rows) => onChange(field.name, rows)}
+          />
+        </div>
       );
 
     default:

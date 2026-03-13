@@ -220,3 +220,18 @@ th:first-child, td:first-child {
   padding-left: 15px;
   border-left: 4px solid #e9ecef;
 }
+
+/* Indentation for sub-questions */
+.indented-field {
+  margin-left: 40px; /* Pushes the field to the right */
+  padding-left: 15px;
+  border-left: 2px solid #e9ecef; /* Optional: adds a vertical 'connector' line */
+  margin-top: -10px; /* Brings them closer together vertically */
+}
+
+/* Adjust the label size for indented fields if they look too bulky */
+.indented-field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #495057;
+}
