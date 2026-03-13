@@ -261,3 +261,57 @@ th:first-child {
   background-color: #f8f9fa; /* Matches your existing header background */
   z-index: 2;
 }
+
+/* =========================================
+   HEADER STYLES
+   ========================================= */
+.header-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0056b3; /* The professional blue background */
+  padding: 20px 30px;
+  border-radius: 8px; /* Matches the rounded corners of your form */
+  margin-bottom: 30px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* White background box for the logos to make them pop against the blue */
+.header-logo-container {
+  background-color: #ffffff; 
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-logo {
+  height: 90px; /* Adjust this if the logos are too big or small */
+  width: auto;
+  object-fit: contain;
+}
+
+/* Centers the title and takes up the remaining middle space */
+.header-titles {
+  flex-grow: 1;
+  text-align: center;
+  padding: 0 20px;
+}
+
+/* Overrides the global black h1 styles */
+.header-titles h1.title-line {
+  color: #ffffff; 
+  margin: 0 0 10px 0;
+  font-size: 2.2rem;
+  border: none;
+}
+
+/* Overrides the global black h2 styles and removes the blue underline */
+.header-titles h2.title-line {
+  color: #e0e0e0; /* Slightly softer white for the subtitle */
+  margin: 0;
+  font-size: 1.3rem;
+  border-bottom: none; 
+  padding-bottom: 0;
+}

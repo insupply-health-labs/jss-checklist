@@ -74,7 +74,9 @@ const App: React.FC = () => {
 
   return (
     <>
-      <Header />
+      {/* We moved the Header INSIDE this wrapper div so it perfectly 
+        shares the 1300px maxWidth and auto-margins with the form! 
+      */}
       <div
         style={{
           maxWidth: 1300,
@@ -82,6 +84,8 @@ const App: React.FC = () => {
           padding: "24px 20px 40px 20px",
         }}
       >
+        <Header /> 
+
         <div
           style={{
             display: "flex",
