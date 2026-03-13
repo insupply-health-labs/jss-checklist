@@ -9,7 +9,6 @@ interface Props {
 }
 
 const TableRenderer: React.FC<Props> = ({ field, value = [], onChange }) => {
-  // 1. We determine the initial rows by checking for value, then defaultValue, then falling back to empty rows.
   const rows =
     value && value.length > 0
       ? value
@@ -19,13 +18,11 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], onChange }) => {
           Object.fromEntries(field.columns.map((col) => [col.key, ""]))
         );
 
-  // 2. We use a useEffect to ensure that if we load the component and it uses default values,
-  // we pass those up to the main form state immediately so the data isn't lost.
   useEffect(() => {
     if ((!value || value.length === 0) && field.defaultValue && field.defaultValue.length > 0) {
       onChange(field.defaultValue);
     }
-  }, []); // Run only once on mount
+  }, []);
 
   const handleCellChange = (rowIndex: number, key: string, cellValue: any) => {
     const updatedRows = [...rows];
@@ -41,21 +38,23 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], onChange }) => {
     onChange(calculateTableRows(field.name, updated));
   };
 
+  // Logic to hide "Add Row" for fixed guideline tables
+  const isFixedTable = field.defaultValue && field.defaultValue.length > 0;
+
   return (
     <div style={{ marginBottom: 24 }}>
-      <label style={{ display: "block", fontWeight: 600, marginBottom: 10 }}>
-        {field.label}
-      </label>
+      {field.label && (
+        <label style={{ display: "block", fontWeight: 600, marginBottom: 10 }}>
+          {field.label}
+        </label>
+      )}
 
-      <div style={{ overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <div className="table-container">
+        <table>
           <thead>
             <tr>
               {field.columns.map((col) => (
-                <th
-                  key={col.key}
-                  style={{ border: "1px solid #ccc", padding: 8, textAlign: "left" }}
-                >
+                <th key={col.key}>
                   {col.label}
                 </th>
               ))}
@@ -65,20 +64,25 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], onChange }) => {
             {rows.map((row, rowIndex) => (
               <tr key={rowIndex}>
                 {field.columns.map((col) => (
-                  <td key={col.key} style={{ border: "1px solid #ccc", padding: 8 }}>
-                    {col.type === "textarea" ? (
+                  <td key={col.key}>
+                    {col.readOnly ? (
+                      /* FIX: Using a div instead of an input allows text wrapping.
+                        Uses the 'readonly-wrapper' class from App.css.
+                      */
+                      <div className="readonly-wrapper">
+                        {row[col.key] || ""}
+                      </div>
+                    ) : col.type === "textarea" ? (
                       <textarea
                         value={row[col.key] || ""}
                         onChange={(e) => handleCellChange(rowIndex, col.key, e.target.value)}
-                        style={{ width: "100%", minHeight: 70 }}
-                        readOnly={col.readOnly || col.computed}
+                        readOnly={col.computed}
                       />
                     ) : col.type === "select" ? (
                       <select
                         value={row[col.key] || ""}
                         onChange={(e) => handleCellChange(rowIndex, col.key, e.target.value)}
-                        style={{ width: "100%" }}
-                        disabled={col.readOnly || col.computed}
+                        disabled={col.computed}
                       >
                         <option value="">Select...</option>
                         {col.options?.map((option) => (
@@ -92,8 +96,7 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], onChange }) => {
                         type={col.type}
                         value={row[col.key] || ""}
                         onChange={(e) => handleCellChange(rowIndex, col.key, e.target.value)}
-                        style={{ width: "100%" }}
-                        readOnly={col.readOnly || col.computed}
+                        readOnly={col.computed}
                       />
                     )}
                   </td>
@@ -103,9 +106,13 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], onChange }) => {
           </tbody>
         </table>
       </div>
-      <button type="button" onClick={addRow} style={{ marginTop: 10 }}>
-        Add Row
-      </button>
+
+      {/* Hide Add Row button if it's a pre-filled guideline table */}
+      {!isFixedTable && (
+        <button type="button" onClick={addRow} style={{ marginTop: 10 }}>
+          + Add Row
+        </button>
+      )}
     </div>
   );
 };

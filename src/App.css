@@ -1,7 +1,11 @@
+/* =========================================
+   GLOBAL STYLES
+   ========================================= */
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  color: #000000; /* Change this for the default text color */
+  color: #000000;
   margin: 0;
+  background-color: #f4f7f9;
 }
 
 #root {
@@ -28,6 +32,9 @@ h2 {
   font-size: 1.75rem;
 }
 
+/* =========================================
+   FORM ELEMENTS
+   ========================================= */
 form {
   margin-top: 2rem;
 }
@@ -44,27 +51,24 @@ input[type="text"],
 input[type="date"],
 input[type="number"],
 input[type="tel"],
-select {
-  padding: 6px; /* Adjust padding to make fields larger or smaller */
+select,
+textarea {
+  padding: 8px 12px;
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid #ccc; /* Change border color */
+  border: 1px solid #ccc;
   border-radius: 4px;
   transition: border-color 0.2s;
-  background-color: #ffffff; /* Change background color of inputs */
-  color: #000000; /* ADD THIS LINE: Ensures typed text is black */
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 14px;
 }
 
-input[type="text"]:focus,
-input[type="date"]:focus,
-input[type="number"]:focus,
-input[type="tel"]:focus,
-select:focus {
+input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: #0056b3;
   box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.2);
 }
-
 
 select {
   appearance: none;
@@ -75,16 +79,15 @@ select {
   padding-right: 2.5rem;
 }
 
-input[type="radio"] {
-  margin-right: 8px;
-}
-
+/* =========================================
+   BUTTONS
+   ========================================= */
 button {
-  padding: 12px 24px;
+  padding: 10px 20px;
   cursor: pointer;
   border-radius: 4px;
   border: none;
-  font-size: 1rem;
+  font-size: 14px;
   font-weight: 600;
   transition: background-color 0.2s, transform 0.1s;
 }
@@ -97,236 +100,123 @@ button[type="submit"] {
   padding: 15px 30px;
 }
 
-button[type="submit"]:hover {
-  background-color: #218838;
-  transform: translateY(-1px);
-}
-
 button[type="button"] {
   background-color: #007bff;
   color: white;
 }
 
-button[type="button"]:hover {
-  background-color: #0056b3;
+button:hover {
+  opacity: 0.9;
 }
 
-.remove-button {
-  color: #dc3545;
-  cursor: pointer;
-  border: none;
-  background: none;
-  padding: 4px;
-  font-size: 0.9rem;
-}
-.remove-button:hover {
-  color: #c82333;
-  text-decoration: underline;
-}
-
-.form-section {
-  border: 1px solid #e0e0e0; /* Change border around sections */
-  margin: 30px 0; /* Adjust spacing between sections */
-  padding: 25px; /* Adjust spacing inside sections */
-  border-radius: 8px;
-  background-color: white;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-}
-
-.field-container {
-  margin-bottom: 25px;
-}
-
-.group-container {
-  margin-left: 15px;
-  padding-left: 20px;
-  border-left: 3px solid #e0e0e0;
-}
-
-.debug-box {
-  margin-top: 50px;
-  padding: 20px;
-  background-color: #282c34;
-  color: #61dafb;
-  border-radius: 8px;
-  overflow-x: auto;
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-.debug-box h3 {
-  margin-top: 0;
-  color: #fff;
-}
-
-/* Table Styles */
+/* =========================================
+   TABLE STYLES & TEXT WRAPPING
+   ========================================= */
 .table-container {
   overflow-x: auto;
   border: 1px solid #ddd;
   padding: 10px;
   background-color: #ffffff;
   border-radius: 4px;
+  margin-bottom: 20px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 10px;
 }
 
 th, td {
   border: 1px solid #ccc;
-  padding: 8px;
+  padding: 10px;
   text-align: left;
+  vertical-align: top; /* Ensures text stays at the top when rows expand */
+  word-wrap: break-word;
+  white-space: normal; /* Enables wrapping for long text */
 }
 
 th {
-  background-color: #ffffff;
+  background-color: #f8f9fa;
   font-size: 13px;
-  font-weight: 600;
-}
-
-td input, td select {
-  padding: 6px;
-  font-size: 13px;
-}
-
-/* Complex Matrix */
-.complex-matrix-container {
-  overflow-x: auto;
-  border: 2px solid #0056b3;
-  border-radius: 8px;
-}
-
-.complex-matrix-container th {
-  background-color: #0056b3;
-  color: white;
-  padding: 12px;
-  min-width: 120px;
-  font-size: 13px;
-}
-
-.complex-matrix-container .group-header td {
-  background-color: #ffffff;
-  padding: 10px;
-  font-weight: bold;
-  border: 1px solid #ccc;
-}
-
-.complex-matrix-container .calculated-cell {
-  background-color: #ffffff;
-  text-align: center;
   font-weight: bold;
 }
 
-.complex-matrix-container .calculated-cell.negative {
-  color: #dc3545;
+/* Give the guideline/first column more width */
+th:first-child, td:first-child {
+  width: 50%;
+  min-width: 300px;
 }
 
-
-/* =========================================
-   HEADER DASHBOARD STYLES
-   ========================================= */
-
-.header-container {
+/* The wrapper used in TableRenderer for read-only cells to allow wrapping */
+.readonly-wrapper {
   width: 100%;
-  margin-bottom: 10px;
-}
-
-/* Deep Navy Banner */
-.header-banner {
-  background-color: #214094; 
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 24px;
+  min-height: 34px;
+  padding: 6px 8px;
+  font-size: 13px;
+  line-height: 1.4;
+  word-break: break-word;
+  white-space: normal;
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
   border-radius: 4px;
-  height: 150px;
-}
-
-.header-titles .title-line {
-  color: #ffffff;         /* Forces text to be white */
-  border-bottom: none;    
-  text-align: center;     /* Keeps text centered */
-  margin: 20px 0;          
-  padding-bottom: 0;     
-}
-
-.header-titles h1.title-line {
-  font-size: 2.5rem;
-}
-
-.header-titles h2.title-line {
-  font-size: 1.8rem;
-  font-weight: 350;
-}
-
-/* Logos on the sides */
-.header-logo {
-  height: 120px; 
-  width: auto;
-  background-color: white; 
-  padding: 4px;
-  border-radius: 2px;
+  box-sizing: border-box;
+  display: block;
 }
 
 /* =========================================
-   GENERAL SECTION GRID LAYOUT (LABELS ABOVE)
+   GENERAL SECTION (LABELS ABOVE BOXES)
    ========================================= */
-
 .general-info-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Two columns */
-  gap: 15px 150px; /* Adds space between the rows and columns */
+  grid-template-columns: 1fr 1fr;
+  gap: 15px 40px; /* Adjusted gap to be tighter */
   margin-bottom: 25px;
-  
-  /* REDUCE LENGTH: Adjust this value to make the boxes shorter */
-  max-width: 800px; 
-  margin-left: 0;
+  max-width: 800px; /* Reduced width to make boxes shorter from left */
 }
 
 .general-info-grid .field-container {
   display: flex;
-  flex-direction: column; /* This puts the label ABOVE the box */
-  margin-bottom: 0;
+  flex-direction: column;
   align-items: flex-start;
+  margin-bottom: 0;
 }
 
-/* Label styling (Top position) */
 .general-info-grid .field-container > label {
-  background-color: transparent; /* Removed grey background for 'Above' style */
-  margin-bottom: 6px; /* Space between label and box */
-  padding: 0;
-  width: 100%;
-  border-right: none;
   font-size: 14px;
-  font-weight: bold;
-  color: #000;
+  margin-bottom: 4px;
+  color: #333;
 }
 
-/* Input/Select styling */
 .general-info-grid .field-container > input,
 .general-info-grid .field-container > select {
-  border: 1px solid #ccc; /* Restored border since it's no longer a 'table cell' */
-  border-radius: 4px;
-  width: 100%; /* Fills the container, which is limited by the grid max-width */
-  padding: 8px 10px;
-  height: 40px;
-  font-size: 14px;
-  box-sizing: border-box;
-}
-
-/* Ensure read-only fields look distinct but consistent */
-.general-info-grid .field-container > input[readOnly] {
-  background-color: #f9f9f9;
-  color: #555;
-}
-
-/* Focus state */
-.general-info-grid .field-container > input:focus,
-.general-info-grid .field-container > select:focus {
-  border-color: #0056b3;
+  height: 38px;
+  border: 1px solid #ccc;
   background-color: #fff;
 }
 
+.general-info-grid .field-container > input[readOnly] {
+  background-color: #f1f3f5;
+  border-color: #dee2e6;
+  color: #495057;
+}
 
+/* =========================================
+   SECTION CONTAINERS
+   ========================================= */
+.form-section {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  margin-bottom: 40px;
+}
+
+.field-container {
+  margin-bottom: 20px;
+}
+
+.group-container {
+  margin-bottom: 30px;
+  padding-left: 15px;
+  border-left: 4px solid #e9ecef;
+}
