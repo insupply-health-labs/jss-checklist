@@ -10,13 +10,13 @@ export const section6: FormSection = {
       fields: [
         {
           name: "pvFormsAvailable",
-          label: "i. Are there pharmacovigilance reporting forms/PVERS in the facility?",
+          label: "i. Are there pharmacovigilance reporting forms (Pharmacovigilance electronic reporting system) in the facility?",
           type: "radio",
           options: yesNoOptions,
         },
         {
           name: "pvEventsReported",
-          label: "ii. Any pharmacovigilance events reported from facility to PPB?",
+          label: "ii. Any pharmacovigilance events reported from facility to PPB? (check if any)",
           type: "radio",
           options: yesNoOptions,
         },
@@ -30,6 +30,9 @@ export const section6: FormSection = {
           name: "poorQualityProductsTable",
           label: "List poor quality products",
           type: "table",
+          visibleWhen: [{ field: "suspectedPoorQualityProducts",
+             equals: "yes" }],
+          className: "indented-field",
           columns: [
             { key: "category", label: "Category", type: "text" },
             { key: "genericName", label: "Generic Name", type: "text" },
@@ -39,9 +42,12 @@ export const section6: FormSection = {
         },
         {
           name: "reportsSubmittedToPpb",
-          label: " Have reports for suspected poor quality products been submitted to PPB?",
+          label: " Have reports for suspected poor quality products been submitted to PPB? (check evidence) ",
           type: "radio",
+           visibleWhen: [{ field: "suspectedPoorQualityProducts",
+             equals: "yes" }],
           options: yesNoOptions,
+          className: "indented-field"
         },
         {
           name: "pvTrainingSessions",
@@ -54,7 +60,18 @@ export const section6: FormSection = {
           type: "radio",
           options: yesNoOptions,
         },
-        { name: "adverseEventsCount", label: "If yes, how many?", type: "number" },
+        { 
+          name: "adverseEventsCount", 
+          label: "How many?",
+          type: "number",
+          className: "indented-field", 
+          visibleWhen: [
+            { 
+              field: "adverseEventsReported", 
+              equals: "yes" 
+            }
+          ],
+        },  
         {
           name: "challengeSubmittingReports",
           label: "vi. If no report was submitted, was there a challenge in submitting to PPB?",

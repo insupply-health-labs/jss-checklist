@@ -26,6 +26,14 @@ const App: React.FC = () => {
     setFormData((prev) => applyGlobalFormLogic(prev));
   }, []);
 
+  // --- NEW: Scroll to top whenever the section changes ---
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // Creates a nice gliding animation to the top
+    });
+  }, [currentSection]);
+
   const malariaRdtAvailability = useMemo(
     () => getMalariaRdtAvailability(formData),
     [formData]
@@ -74,7 +82,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      {/* We moved the Header INSIDE this wrapper div so it perfectly 
+      {/* The Header is now inside this wrapper div so it perfectly 
         shares the 1300px maxWidth and auto-margins with the form! 
       */}
       <div
