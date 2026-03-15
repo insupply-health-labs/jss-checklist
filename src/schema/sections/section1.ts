@@ -103,7 +103,6 @@ export const section1: FormSection = {
           visibleWhen: [{ field: "facilityManagementTeam",
              equals: "available" }],
           columns: [
-            { key: "no", label: "No", type: "number" },
             {
               key: "position",
               label: "Position/Designation",
@@ -111,7 +110,7 @@ export const section1: FormSection = {
               options: positionOptions,
             },
           ],
-          minRows: 7,
+          minRows: 3,
         },
         {
           name: "facilityManagementMinutes",
@@ -139,7 +138,6 @@ export const section1: FormSection = {
           type: "table",
           visibleWhen: [{ field: "qualityImprovementTeam", equals: "available" }],
           columns: [
-            { key: "no", label: "No", type: "number" },
             {
               key: "position",
               label: "Position/Designation",
@@ -147,7 +145,7 @@ export const section1: FormSection = {
               options: positionOptions,
             },
           ],
-          minRows: 7,
+          minRows: 3,
         },
         {
           name: "qualityImprovementMinutes",
@@ -175,7 +173,6 @@ export const section1: FormSection = {
           type: "table",
           visibleWhen: [{ field: "mtcAvailable", equals: "available" }],
           columns: [
-            { key: "no", label: "No", type: "number" },
             {
               key: "position",
               label: "Position/Designation",
@@ -183,7 +180,7 @@ export const section1: FormSection = {
               options: positionOptions,
             },
           ],
-          minRows: 7,
+          minRows: 3,
         },
         {
           name: "mtcMinutes",
