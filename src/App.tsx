@@ -14,6 +14,7 @@ import { applyGlobalFormLogic, getMalariaRdtAvailability } from "./utils/FormEng
 const App: React.FC = () => {
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [currentSection, setCurrentSection] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (name: string, value: any) => {
     setFormData((prev) => {
@@ -26,11 +27,11 @@ const App: React.FC = () => {
     setFormData((prev) => applyGlobalFormLogic(prev));
   }, []);
 
-  // --- NEW: Scroll to top whenever the section changes ---
+  // --- Scroll to top whenever the section changes ---
   useEffect(() => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth", // Creates a nice gliding animation to the top
+      behavior: "smooth",
     });
   }, [currentSection]);
 
@@ -38,6 +39,38 @@ const App: React.FC = () => {
     () => getMalariaRdtAvailability(formData),
     [formData]
   );
+
+  // --- Submit Logic ---
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      // Your Google Apps Script Web App URL
+      const googleScriptUrl = "https://script.google.com/macros/s/AKfycbwnXH41e8s2ljvxdRs9bWxxngCI4AR0jL_DKbXqoaS2s56M7KpvjUll2Z9-lgzIgEZX/exec";
+      
+      await fetch(googleScriptUrl, {
+        method: "POST",
+        mode: "no-cors", 
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      alert("Form submitted successfully!");
+    } catch (error) {
+      alert("There was an error submitting the form. Please try again.");
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // --- See Results Logic ---
+  const handleSeeResults = () => {
+    // UPDATED: Your exact Google Sheet URL
+    const googleSheetUrl = "https://docs.google.com/spreadsheets/d/1tP3ypIsZDWEBG-rH7O7TUTVzzrcQI71VL1K-aJ201HQ/edit?gid=0#gid=0";
+    window.open(googleSheetUrl, "_blank");
+  };
 
   const renderSection = () => {
     switch (currentSection) {
@@ -82,9 +115,6 @@ const App: React.FC = () => {
 
   return (
     <>
-      {/* The Header is now inside this wrapper div so it perfectly 
-        shares the 1300px maxWidth and auto-margins with the form! 
-      */}
       <div
         style={{
           maxWidth: 1300,
@@ -121,23 +151,53 @@ const App: React.FC = () => {
           style={{
             display: "flex",
             justifyContent: "space-between",
+            alignItems: "center",
             marginTop: 30,
+            paddingTop: 20,
+            borderTop: "2px solid #e9ecef"
           }}
         >
-          <button
-            type="button"
-            onClick={() => setCurrentSection((prev) => Math.max(prev - 1, 1))}
-            disabled={currentSection === 1}
-          >
-            Previous
-          </button>
-          <button
-            type="button"
-            onClick={() => setCurrentSection((prev) => Math.min(prev + 1, 9))}
-            disabled={currentSection === 9}
-          >
-            Next
-          </button>
+          {/* Left Side: Navigation */}
+          <div>
+            <button
+              type="button"
+              onClick={() => setCurrentSection((prev) => Math.max(prev - 1, 1))}
+              disabled={currentSection === 1}
+              style={{ marginRight: 10 }}
+            >
+              Previous
+            </button>
+            <button
+              type="button"
+              onClick={() => setCurrentSection((prev) => Math.min(prev + 1, 9))}
+              disabled={currentSection === 9}
+            >
+              Next
+            </button>
+          </div>
+
+          {/* Right Side: Database Actions */}
+          <div>
+            <button
+              type="button"
+              onClick={handleSeeResults}
+              style={{ backgroundColor: "#6c757d", marginRight: 15 }}
+            >
+              See Results
+            </button>
+
+            {/* Show "Submit" only on the final section */}
+            {currentSection === 9 && (
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                style={{ backgroundColor: "#28a745" }}
+              >
+                {isSubmitting ? "Submitting..." : "Submit"}
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </>
