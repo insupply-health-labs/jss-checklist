@@ -98,12 +98,6 @@ export const section7: FormSection = {
             { parameter: "Calculate value of variance (*) (autocalculate)" },
           ],
         },
-        { 
-          name: "valueCalculationNote", 
-          label: "(*) The value calculation may potentially be done by the HPM mentor/(sub)county pharmacist in charge following the visit, rather than during the JSS visit, in order to save time. The value calculations should be included in the reports at the moment of uploading.", 
-          type: "text",
-          readOnly: true
-        },
       ],
     },
     {
