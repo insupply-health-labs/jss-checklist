@@ -101,12 +101,41 @@ button[type="submit"] {
 }
 
 button[type="button"] {
-  background-color: #007bff;
-  color: white;
+  background-color: #0d63e4;
+  color: rgb(247, 241, 241);
 }
 
 button:hover {
   opacity: 0.9;
+}
+
+/* =========================================
+   SECTION NAVIGATION TABS (NEW)
+   ========================================= */
+/* 1. Default state: Light background, dark text */
+.section-tab {
+  background-color: #e9ecef !important; /* Force override standard button colors */
+  color: #495057 !important;
+  border: 1px solid #ced4da !important;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+}
+
+/* 2. Hover state: Slightly darker when the mouse is over it */
+.section-tab:hover {
+  background-color: #dde2e6 !important; 
+}
+
+/* 3. Active state: Turns blue when clicked/currently viewing */
+.section-tab.active {
+  background-color: #007bff !important; 
+  color: #ffffff !important; 
+  border-color: #007bff !important;
+  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
 }
 
 /* =========================================
