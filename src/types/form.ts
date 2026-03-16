@@ -90,6 +90,7 @@ export interface FieldGroup {
   title?: string;
   fields: Field[];
   className?: string;
+  description?: string,
 }
 
 export interface FormSection {

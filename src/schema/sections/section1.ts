@@ -89,6 +89,7 @@ export const section1: FormSection = {
     },
     {
       title: "B. Facility Management/Governance",
+      description: "The names/positions of core members of the different teams can be completed by the county pharmacist/HPM mentor, as applicable, prior to visit, to save time for checking/reviewing minutes of the last meetings",
       fields: [
         {
           name: "facilityManagementTeam",
@@ -210,15 +211,22 @@ export const section1: FormSection = {
         },
         {
           name: "advanceDeliveryAlert",
-          label: "Did the facility receive advance alert of dispatch/delivery time?",
+          label: "For the last KEMSA/other suppliers’ delivery, did the healthcare facility receive advance alert of the dispatch and delivery time? ",
           type: "radio",
+          options: yesNoOptions,
+        },
+        {
+          name: "haswasteDisposalCommitteeMembers",
+          label: "v. Are there waste Management/Disposal Committee Members?",
+          type: "select",
           options: yesNoOptions,
         },
 
         {
           name: "wasteDisposalCommitteeMembers",
-          label: "v. Waste Management/Disposal Committee Members",
+          label: "List the Waste Management/Disposal Committee Members",
           type: "table",
+          visibleWhen: [{ field: "haswasteDisposalCommitteeMembers", equals: "yes" }],
           columns: [
             {
               key: "position",

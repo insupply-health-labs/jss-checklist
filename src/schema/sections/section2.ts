@@ -16,7 +16,7 @@ export const section2: FormSection = {
         },
         {
           name: "commoditySupervisionBy",
-          label: "If yes, by who? Indicate designation(s) drop down (allow for >1)– National, CHMT, SCHMT, Partners",
+          label: "By who? Indicate designation(s) ",
           type: "multiselect",
           visibleWhen: [{ field: "receivedCommoditySupervisionVisit", equals: "yes" }],
           options: [
@@ -35,7 +35,7 @@ export const section2: FormSection = {
         },
         {
           name: "capacityBuildingTopics",
-          label: "If yes, which topics did they cover?",
+          label: "Which topics did they cover?",
           type: "table",
           visibleWhen: [{ field: "capacityBuildingDone", equals: "yes" }],
           columns: [
@@ -97,7 +97,7 @@ export const section2: FormSection = {
         },
         {
           name: "cmeFrequency",
-          label: "If yes, how often are the CMEs done? (Ask to see evidence - schedule, minutes, register, attendance lists etc)",
+          label: "How often are the CMEs done? (Ask to see evidence - schedule, minutes, register, attendance lists etc)",
           type: "select",
           visibleWhen: [{ field: "hasCME", equals: "yes" }],
           options: [
@@ -120,7 +120,7 @@ export const section2: FormSection = {
         },
         {
           name: "dqaVisitBy",
-          label: "If yes, by who?",
+          label: "By who?",
           type: "multiselect",
           visibleWhen: [{ field: "receivedDqaVisit", equals: "yes" }],
           options: [
