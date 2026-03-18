@@ -181,3 +181,15 @@ export const getMalariaRdtAvailability = (formData: Record<string, any>): string
   );
   return malariaRow?.available || "";
 };
+
+// Looks inside the laboratoryTests table for the "HIV Screening test" row
+export const getHivScreeningAvailability = (formData: Record<string, any>): string => {
+  const labTests = formData.laboratoryTests;
+  if (Array.isArray(labTests)) {
+    const hivRow = labTests.find((row) => row.test === "HIV Screening test");
+    if (hivRow && hivRow.available) {
+      return hivRow.available.toLowerCase(); // Returns "yes" or "no"
+    }
+  }
+  return "unknown"; 
+};

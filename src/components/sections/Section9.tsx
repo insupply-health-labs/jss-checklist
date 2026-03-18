@@ -10,42 +10,48 @@ interface Props {
 const Section9: React.FC<Props> = ({ formData, onChange }) => {
 
   useEffect(() => {
-    // 1. Map your keys to the actual Thematic Area names
-    // Make sure these keys exactly match the customNames you passed to makeSectionSummary in sections 1-8!
+    // These keys now EXACTLY match the custom names from your sections
     const summaryMappings = [
-      { key: "section1Conclusion", title: "1. Health Facility Profile" },
-      { key: "guidelinesConclusion", title: "3. Guidelines and SOPs" },
-      { key: "availabilityAndUseOfRecordsAndReportingFormsConclusion", title: "4. Tools" },
-      { key: "storageConditionsConclusion", title: "5. Storage Conditions" },
-      { key: "stockMovementConclusion", title: "7. Stock Movement" },
-      { key: "patientCommodityTriangulationConclusion", title: "8. Data Triangulation" }
-      // Add any other sections you summarized!
+      { key: "facilityGovernanceAndServicesConclusion", title: "Facility Governance & Services" },
+      { key: "humanResourceCapacityBuildingConclusion", title: "Human Resource Capacity Building" },
+      { key: "availabilityAndUseOfGuidelinesAndSopsConclusion", title: "Availability & Use of Guidelines and SOPs" },
+      { key: "availabilityAndUseOfRecordsAndReportingFormsConclusion", title: "Availability and Use of Records & Reporting Forms" },
+      { key: "storageConditionsConclusion", title: "Storage Conditions" },
+      // Note: Because Pharmacovigilance didn't have a 2nd string in your snippet, it defaults to "sectionSummary"
+      { key: "sectionSummary", title: "Pharmacovigilance" }, 
+      { key: "stockMovementConclusion", title: "Stock Movement Management & Record Keeping" },
+      { key: "patientCommodityTriangulationConclusion", title: "Patient and Commodity Data Triangulation" }
     ];
 
     let aggregatedData: any[] = [];
 
-    // 2. Loop through and gather the data
     summaryMappings.forEach(({ key, title }) => {
       const sectionData = formData[key];
       
       if (sectionData && Array.isArray(sectionData)) {
-        // Filter out blank rows
         const filledRows = sectionData
           .filter((row) => row.bestPractice || row.mainIssues || row.underlyingCauses)
           .map((row) => ({
-            ...row,
-            thematicArea: title // <--- INJECT THE TITLE HERE
+            // Force the mapping to EXACTLY match Section 9's column keys
+            thematicArea: title,
+            bestPractice: row.bestPractice || "",
+            mainIssues: row.mainIssues || "", 
+            underlyingCauses: row.underlyingCauses || ""
           }));
           
         aggregatedData = [...aggregatedData, ...filledRows];
       }
     });
 
-    // 3. Push to Overview Table 1
-    if (aggregatedData.length > 0) {
+    // We check the current data in the table to see if it matches our newly aggregated data
+    // This deep comparison PREVENTS infinite re-renders and allows you to edit Table 2!
+    const currentTableData = formData.overviewTable1 || [];
+    
+    if (JSON.stringify(currentTableData) !== JSON.stringify(aggregatedData)) {
       onChange("overviewTable1", aggregatedData);
     }
-  }, []); // Run once when component mounts
+    
+  }, [formData, onChange]); // Re-run when formData changes to keep columns synced
 
   return <SectionTemplate section={section9} formData={formData} onChange={onChange} />;
 };

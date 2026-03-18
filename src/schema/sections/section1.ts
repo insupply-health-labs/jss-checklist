@@ -237,7 +237,7 @@ export const section1: FormSection = {
         },
         {
           name: "haswasteDisposalCommitteeMembers",
-          label: "v. Are there waste Management/Disposal Committee Members?",
+          label: "v. Ïs there a waste management/disposal committe?",
           type: "select",
           options: yesNoOptions,
         },
