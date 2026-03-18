@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import SectionTemplate from "../common/SectionTemplate";
-import { section9 } from "../../schema/sections/section9";
+import { section9, summaryMappings } from "../../schema/sections/section9"; 
 
 interface Props {
   formData: Record<string, any>;
@@ -10,48 +10,47 @@ interface Props {
 const Section9: React.FC<Props> = ({ formData, onChange }) => {
 
   useEffect(() => {
-    // These keys now EXACTLY match the custom names from your sections
-    const summaryMappings = [
-      { key: "facilityGovernanceAndServicesConclusion", title: "Facility Governance & Services" },
-      { key: "humanResourceCapacityBuildingConclusion", title: "Human Resource Capacity Building" },
-      { key: "availabilityAndUseOfGuidelinesAndSopsConclusion", title: "Availability & Use of Guidelines and SOPs" },
-      { key: "availabilityAndUseOfRecordsAndReportingFormsConclusion", title: "Availability and Use of Records & Reporting Forms" },
-      { key: "storageConditionsConclusion", title: "Storage Conditions" },
-      // Note: Because Pharmacovigilance didn't have a 2nd string in your snippet, it defaults to "sectionSummary"
-      { key: "sectionSummary", title: "Pharmacovigilance" }, 
-      { key: "stockMovementConclusion", title: "Stock Movement Management & Record Keeping" },
-      { key: "patientCommodityTriangulationConclusion", title: "Patient and Commodity Data Triangulation" }
-    ];
+    summaryMappings.forEach(({ key }) => {
+      const sourceData = formData[key];
+      const targetTable1Key = `overview_${key}`; 
+      const targetTable2Key = `actionPlan_${key}`; 
 
-    let aggregatedData: any[] = [];
-
-    summaryMappings.forEach(({ key, title }) => {
-      const sectionData = formData[key];
-      
-      if (sectionData && Array.isArray(sectionData)) {
-        const filledRows = sectionData
+      if (sourceData && Array.isArray(sourceData)) {
+        const filledRows1 = sourceData
           .filter((row) => row.bestPractice || row.mainIssues || row.underlyingCauses)
           .map((row) => ({
-            // Force the mapping to EXACTLY match Section 9's column keys
-            thematicArea: title,
             bestPractice: row.bestPractice || "",
             mainIssues: row.mainIssues || "", 
             underlyingCauses: row.underlyingCauses || ""
           }));
-          
-        aggregatedData = [...aggregatedData, ...filledRows];
+
+        const currentTableData1 = formData[targetTable1Key] || [];
+        if (JSON.stringify(currentTableData1) !== JSON.stringify(filledRows1)) {
+          onChange(targetTable1Key, filledRows1);
+        }
+        const actionPlanRows = sourceData
+          .filter((row) => row.mainIssues) 
+          .map((row, index) => {
+            const existingRow = (formData[targetTable2Key] || [])[index] || {};
+
+            return {
+              issueGap: row.mainIssues, 
+              desiredResult: existingRow.desiredResult || "",
+              actionRequired: existingRow.actionRequired || "",
+              responsiblePerson: existingRow.responsiblePerson || "",
+              resourcesNeeded: existingRow.resourcesNeeded || "",
+              completionDate: existingRow.completionDate || "",
+            };
+          });
+
+        const currentTableData2 = formData[targetTable2Key] || [];
+        if (JSON.stringify(currentTableData2) !== JSON.stringify(actionPlanRows)) {
+          onChange(targetTable2Key, actionPlanRows);
+        }
       }
     });
-
-    // We check the current data in the table to see if it matches our newly aggregated data
-    // This deep comparison PREVENTS infinite re-renders and allows you to edit Table 2!
-    const currentTableData = formData.overviewTable1 || [];
     
-    if (JSON.stringify(currentTableData) !== JSON.stringify(aggregatedData)) {
-      onChange("overviewTable1", aggregatedData);
-    }
-    
-  }, [formData, onChange]); // Re-run when formData changes to keep columns synced
+  }, [formData, onChange]); 
 
   return <SectionTemplate section={section9} formData={formData} onChange={onChange} />;
 };

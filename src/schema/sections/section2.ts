@@ -57,13 +57,13 @@ export const section2: FormSection = {
           name: "previousActionPoints",
           label: "iii. Review the action points agreed upon at the last commodity supervision visit, if any (allow skip if ‘No’ is selected above)",
           type: "table",
-          visibleWhen: [{ field: "receivedCommoditySupervisionVisit", equals: "yes" }],
+          visibleWhen: [{ field: "capacityBuildingDone", equals: "yes" }],
           columns: [
             { key: "actionPoint", label: "Previous Action point", type: "textarea" },
             { key: "status", label: "Status Done/Not Done", type: "select", options: doneOptions },
             { key: "reasonNotDone", label: "Reason for Not done", type: "textarea" },
           ],
-          minRows: 3,
+          minRows: 2,
         },
         {
           name: "staffTrainedCommodityManagement",
@@ -78,13 +78,13 @@ export const section2: FormSection = {
           visibleWhen: [{ field: "staffTrainedCommodityManagement", equals: "yes" }] 
         },
         { 
-          name: "trainingDuration", 
+          name: "trainingStartDate", 
           label: " Start Date of training", 
           type: "date",
           visibleWhen: [{ field: "staffTrainedCommodityManagement", equals: "yes" }] 
         },
         {
-          name: "trainingDuration", 
+          name: "trainingEnddate", 
           label: "End Date of training", 
           type: "date",
           visibleWhen: [{ field: "staffTrainedCommodityManagement", equals: "yes" }]

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./components/common/Header";
 import Section1 from "./components/sections/Section1";
 import Section2 from "./components/sections/Section2";
@@ -9,7 +9,7 @@ import Section6 from "./components/sections/Section6";
 import Section7 from "./components/sections/Section7";
 import Section8 from "./components/sections/Section8";
 import Section9 from "./components/sections/Section9";
-import { applyGlobalFormLogic, getMalariaRdtAvailability } from "./utils/FormEngine";
+import { applyGlobalFormLogic } from "./utils/FormEngine";
 
 const App: React.FC = () => {
   const [formData, setFormData] = useState<Record<string, any>>({});
@@ -35,16 +35,11 @@ const App: React.FC = () => {
     });
   }, [currentSection]);
 
-  const malariaRdtAvailability = useMemo(
-    () => getMalariaRdtAvailability(formData),
-    [formData]
-  );
-
   // --- Submit Logic ---
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      // Your Google Apps Script Web App URL
+      // Google Apps Script Web App URL
       const googleScriptUrl = "https://script.google.com/macros/s/AKfycbwnXH41e8s2ljvxdRs9bWxxngCI4AR0jL_DKbXqoaS2s56M7KpvjUll2Z9-lgzIgEZX/exec";
       
       await fetch(googleScriptUrl, {
@@ -89,23 +84,7 @@ const App: React.FC = () => {
       case 7:
         return <Section7 formData={formData} onChange={handleChange} />;
       case 8:
-        return malariaRdtAvailability === "no" ? (
-          <div
-            style={{
-              padding: 20,
-              border: "1px solid #ddd",
-              borderRadius: 12,
-              backgroundColor: "#fff",
-            }}
-          >
-            <h2>8. Patient and Commodity Data Triangulation</h2>
-            <p style={{ color: "#dc3545", fontWeight: "bold" }}>
-              This section is skipped because “Malaria RDT” was marked as not available in Section 1.
-            </p>
-          </div>
-        ) : (
-          <Section8 formData={formData} onChange={handleChange} />
-        );
+        return <Section8 formData={formData} onChange={handleChange} />;
       case 9:
         return <Section9 formData={formData} onChange={handleChange} />;
       default:

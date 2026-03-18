@@ -2,9 +2,9 @@ import type { FormSection, TableColumn } from "../../types/form";
 import { makeSectionSummary, yesNoOptions } from "../../utils/helpers";
 
 const guidelineColumns: TableColumn[] = [
+  { key: "guideline", label: "Guideline (*)", type: "text", readOnly: true },
   { key: "available", label: "Available YES/NO (**)", type: "select", options: yesNoOptions },
   { key: "year", label: "Year of Publication (where applicable)", type: "text" },
-  { key: "guideline", label: "Guideline (*)", type: "text", readOnly: true },
 ];
 
 export const section3: FormSection = {

@@ -129,7 +129,7 @@ export const section5: FormSection = {
         },
 
         makeSectionSummary(
-          "Storage Conditions",
+          "B. Storage Conditions",
           "storageConditionsConclusion"
         ),
       ],
