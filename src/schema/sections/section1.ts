@@ -29,7 +29,7 @@ export const section1: FormSection = {
         { 
           name: "facilityName",
           label: "Facility Name",
-          type: "select", 
+          type: "search-select", 
           helperText: "Select a facility",
           options: mflFacilities
           .slice()

@@ -14,7 +14,6 @@ interface Props {
 const FieldRenderer: React.FC<Props> = ({ field, value, formData, onChange }) => {
   if (!isFieldVisible(field, formData)) return null;
 
-  // This variable makes the className logic cleaner for each case
   const containerClass = `field-container ${field.className || ""}`;
 
   switch (field.type) {
@@ -60,7 +59,8 @@ const FieldRenderer: React.FC<Props> = ({ field, value, formData, onChange }) =>
             disabled={field.readOnly}
           >
             <option value="">Select...</option>
-            {field.options?.map((option) => (
+            {/* Cast as SelectField to ensure options exist for TS */}
+            {(field as any).options?.map((option: any) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
@@ -69,12 +69,38 @@ const FieldRenderer: React.FC<Props> = ({ field, value, formData, onChange }) =>
         </div>
       );
 
+    case "search-select":
+      return (
+        <div className={containerClass} style={{ marginBottom: 16 }}>
+          <label>{field.label}</label>
+          <input
+            type="text"
+            list={`list-${field.name}`}
+            value={value || ""}
+            onChange={(e) => onChange(field.name, e.target.value)}
+            placeholder="Type to search..."
+            style={{ width: "100%", marginTop: 6, padding: 8 }}
+            disabled={field.readOnly}
+          />
+          <datalist id={`list-${field.name}`}>
+            {(field as any).options?.map((option: { label: string; value: string }) => (
+              <option key={option.value} value={option.label} />
+            ))}
+          </datalist>
+          {field.helperText && (
+            <div style={{ marginTop: 4 }}>
+              <small style={{ color: "#666" }}>{field.helperText}</small>
+            </div>
+          )}
+        </div>
+      );
+
     case "radio":
       return (
         <div className={containerClass} style={{ marginBottom: 16 }}>
           <label>{field.label}</label>
           <div style={{ marginTop: 6 }}>
-            {field.options?.map((option) => (
+            {(field as any).options?.map((option: any) => (
               <label key={option.value} style={{ marginRight: 16 }}>
                 <input
                   type="radio"
@@ -111,7 +137,7 @@ const FieldRenderer: React.FC<Props> = ({ field, value, formData, onChange }) =>
         <div className={containerClass} style={{ marginBottom: 16 }}>
           <label>{field.label}</label>
           <div style={{ marginTop: 8 }}>
-            {field.options?.map((option) => {
+            {(field as any).options?.map((option: any) => {
               const current = Array.isArray(value) ? value : [];
               return (
                 <label key={option.value} style={{ display: "block", marginBottom: 6 }}>

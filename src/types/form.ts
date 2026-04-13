@@ -8,6 +8,7 @@ export type FieldType =
   | "checkbox"
   | "multiselect"
   | "table"
+  | "search-select"
   | "sectionSummary";
 
 export interface Option {
@@ -40,7 +41,7 @@ export interface InputField extends BaseField {
 }
 
 export interface SelectField extends BaseField {
-  type: "select" | "radio";
+  type: "select" | "radio" |"search-select";
   options?: Option[];
 }
 

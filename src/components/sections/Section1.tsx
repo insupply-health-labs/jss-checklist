@@ -1,7 +1,7 @@
 import React from "react";
 import SectionTemplate from "../common/SectionTemplate";
 import { section1 } from "../../schema/sections/section1";
-import { mflFacilities } from "../../data/mflFacilities"; // Ensure this path is correct
+import { mflFacilities } from "../../data/mflFacilities"; 
 import "../../App.css";
 
 interface Props {
@@ -12,10 +12,8 @@ interface Props {
 const Section1: React.FC<Props> = ({ formData, onChange }) => {
   
   const handleCustomChange = (name: string, value: any) => {
-    // 1. Update the field being typed in
     onChange(name, value);
 
-    // 2. Auto-populate logic if typing in facilityName
     if (name === "facilityName" && typeof value === "string") {
       const typedName = value.trim().toLowerCase();
       
