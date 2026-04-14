@@ -57,7 +57,7 @@ export interface MultiSelectField extends BaseField {
 export interface TableColumn {
   key: string;
   label: string;
-  type: "text" | "number" | "textarea" | "select" | "date";
+  type: "text" | "number" | "textarea" | "select" | "date" | "checkbox";
   options?: Option[];
   readOnly?: boolean;
   computed?: boolean;

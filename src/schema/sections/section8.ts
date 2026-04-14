@@ -13,46 +13,59 @@ export const section8: FormSection = {
   groups: [
     {
       title: "Malaria Triangulation",
-      description: "Notes: Select appropriate tools i.e., MOH 705A and MOH 705B for services in primary care facilities and MOH 706 for hospitals. MOH 743 for commodity data in all facilities.",
+      description: "Notes: MOH 705A/B for primary care, MOH 706 for hospitals. MOH 743 for commodity data.",
       fields: [
         {
           name: "malariaScreeningVsMrdt",
-          label: "Malaria: Reporting on screening of patients (HMIS data) vs records of mRDT issues (LMIS data) for past three months",
+          label: "Malaria: Reporting on screening vs records of mRDT issues",
           type: "table",
-          visibleWhen: [{ field: "hasLaboratory", equals: "yes" }],
+          // Visibility: Only if 'Malaria RDT' is checked 'Yes' in Section 1 Lab Table
+          visibleWhen: [
+            { field: "hasLaboratory", equals: "yes" },
+            { 
+              field: "laboratoryTests", 
+              includes: { test: "Malaria RDT", isYes: true } 
+            }
+          ],
           columns: [
-            { key: "month", label: "", type: "text", readOnly: true, width: "8%" }, 
-            { key: "peopleTested", label: "Reported no. of people tested for malaria by mRDT (MOH 705A & MOH 705B/MOH 706)", type: "number" },
-            { key: "mrdtConsumed", label: "No. of mRDT consumed dispensed (as reported in MOH 643/MOH 743)", type: "number" },
+            { key: "month", label: "Month", type: "text", readOnly: true, width: "10%" }, 
+            { key: "peopleTested", label: "Reported tested (MOH 705A/B/706)", type: "number" },
+            { key: "mrdtConsumed", label: "mRDT consumed (MOH 643/743)", type: "number" },
             { 
               key: "ratio", 
-              label: "Reported number of patients screened for malaria/recorded number of issued mRDTs (%)", 
+              label: "Ratio (%)", 
               type: "number",
-              readOnly: true, // Make it read-only so users can't overwrite the math
-              calculate: (row) => row.peopleTested && row.mrdtConsumed ? ((Number(row.peopleTested) / Number(row.mrdtConsumed)) * 100).toFixed(1) : "" // <-- AUTO-CALC
+              readOnly: true, 
+              calculate: (row) => row.peopleTested && row.mrdtConsumed ? ((Number(row.peopleTested) / Number(row.mrdtConsumed)) * 100).toFixed(1) : "" 
             },
-            { key: "varianceReason", label: "In case of variance, what is the reason for the variance", type: "textarea" },
+            { key: "varianceReason", label: "Variance Reason", type: "textarea" },
           ],
           defaultValue: defaultMonthRows,
         },
         {
           name: "malariaTreatmentTriangulation",
-          label: "Malaria: Comparison reporting of “malaria positive cases” and “patients treated” (HMIS data) vs “AL treatments supplied” (LMIS data) for past three months",
+          label: "Malaria: Positive cases vs AL treatments supplied",
           type: "table",
-          visibleWhen: [{ field: "hasLaboratory", equals: "yes" }],
+          visibleWhen: [
+            { field: "hasLaboratory", equals: "yes" },
+            { 
+              field: "laboratoryTests", 
+              includes: { test: "Malaria RDT", isYes: true } 
+            }
+          ],
           columns: [
-            { key: "month", label: "", type: "text", readOnly: true, width: "8%" },
-            { key: "positiveCases", label: "Reported no. of positive mRDT + Microscopy tests (MOH 705A/MOH 705B/MOH 706)", type: "number" },
-            { key: "patientsTreated", label: "Reported no. of patients treated (Ref. weight bands in MOH 743)", type: "number" },
-            { key: "alIssued", label: "No. of AL treatment packs issued as per monthly summary tool MOH 743", type: "number" },
+            { key: "month", label: "Month", type: "text", readOnly: true, width: "10%" },
+            { key: "positiveCases", label: "Positive mRDT + Micro (MOH 705A/B/706)", type: "number" },
+            { key: "patientsTreated", label: "Patients treated (MOH 743)", type: "number" },
+            { key: "alIssued", label: "AL packs issued (MOH 743)", type: "number" },
             { 
               key: "ratio", 
-              label: "% AL treatments issued/No. of reported positive cases", 
+              label: "% AL/Positive cases", 
               type: "number",
               readOnly: true,
               calculate: (row) => row.alIssued && row.positiveCases ? ((Number(row.alIssued) / Number(row.positiveCases)) * 100).toFixed(1) : ""
             },
-            { key: "varianceReason", label: "In case of variance, what is the reason given for the variance", type: "textarea" },
+            { key: "varianceReason", label: "Variance Reason", type: "textarea" },
           ],
           defaultValue: defaultMonthRows,
         },
@@ -63,40 +76,55 @@ export const section8: FormSection = {
       fields: [
         {
           name: "hivScreeningVsRdt",
-          label: "HIV: Reporting on screening of patients (HMIS data) vs records of HIV RDT issues (LMIS data) for past three months",
+          label: "HIV: Reporting on screening vs HIV RDT issues",
           type: "table",
+          // Visibility: Only if 'HIV Screening test' is checked 'Yes' in Section 1 Lab Table
+          visibleWhen: [
+            { field: "hasLaboratory", equals: "yes" },
+            { 
+              field: "laboratoryTests", 
+              includes: { test: "HIV Screening test", isYes: true } 
+            }
+          ],
           columns: [
-            { key: "month", label: "", type: "text", readOnly: true, width: "8%" },
-            { key: "peopleScreened", label: "Reported no. of people screened for MOH 731", type: "number" },
-            { key: "trinscreenUsed", label: "No. of screening tests (Trinscreen) consumed/as per lab register MOH 643", type: "number" },
+            { key: "month", label: "Month", type: "text", readOnly: true, width: "10%" },
+            { key: "peopleScreened", label: "Screened (MOH 731)", type: "number" },
+            { key: "trinscreenUsed", label: "Trinscreen consumed (MOH 643)", type: "number" },
             { 
               key: "ratio", 
-              label: "Reported number of patients screened for HIV/recorded number of HIV RDTs (Trinscreen) issued (%)", 
+              label: "Ratio (%)", 
               type: "number",
               readOnly: true,
               calculate: (row) => row.peopleScreened && row.trinscreenUsed ? ((Number(row.peopleScreened) / Number(row.trinscreenUsed)) * 100).toFixed(1) : ""
             },
-            { key: "varianceReason", label: "In case of variance, what is the reason for the variance", type: "textarea" },
+            { key: "varianceReason", label: "Variance Reason", type: "textarea" },
           ],
           defaultValue: defaultMonthRows,
         },
         {
           name: "hivTreatmentTriangulation",
-          label: "HIV: Comparison reporting of “HIV positive cases” and “patients put on treatment” (HMIS data) vs “ARV treatments supplied” (LMIS data) for past three months",
+          label: "HIV: Positive cases vs ARV treatments supplied",
           type: "table",
+          visibleWhen: [
+            { field: "hasLaboratory", equals: "yes" },
+            { 
+              field: "laboratoryTests", 
+              includes: { test: "HIV Screening test", isYes: true } 
+            }
+          ],
           columns: [
-            { key: "month", label: "", type: "text", readOnly: true, width: "8%" },
-            { key: "positiveTests", label: "Reported no. of positive HIV tests (MOH 731)", type: "number" },
-            { key: "putOnTreatment", label: "Reported no. of patients put on treatment (MOH 731)", type: "number" },
-            { key: "arvsIssued", label: "No. of ARV treatments issued as per dispensing area register (DAR in pharmacy MOH 367 A)", type: "number" },
+            { key: "month", label: "Month", type: "text", readOnly: true, width: "10%" },
+            { key: "positiveTests", label: "Positive HIV tests (MOH 731)", type: "number" },
+            { key: "putOnTreatment", label: "Put on treatment (MOH 731)", type: "number" },
+            { key: "arvsIssued", label: "ARVs issued (MOH 367 A)", type: "number" },
             { 
               key: "ratio", 
-              label: "% ARV treatments issued/No. of reported on treatment", 
+              label: "% ARV/On treatment", 
               type: "number",
               readOnly: true,
               calculate: (row) => row.arvsIssued && row.putOnTreatment ? ((Number(row.arvsIssued) / Number(row.putOnTreatment)) * 100).toFixed(1) : ""
             },
-            { key: "varianceReason", label: "In case of variance, what is the reason given for the variance", type: "textarea" },
+            { key: "varianceReason", label: "Variance Reason", type: "textarea" },
           ],
           defaultValue: defaultMonthRows,
         },

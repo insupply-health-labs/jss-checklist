@@ -5,7 +5,7 @@ import { calculateTableRows } from "../../utils/FormEngine";
 interface Props {
   field: TableField;
   value: Record<string, any>[];
-  formData?: Record<string, any>; // ADDED: Needed for cross-table math
+  formData?: Record<string, any>;
   onChange: (rows: Record<string, any>[]) => void;
 }
 
@@ -27,24 +27,37 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], formData = {}, onCh
 
   const handleCellChange = (rowIndex: number, key: string, cellValue: any) => {
     const updatedRows = [...rows];
-    updatedRows[rowIndex] = { ...updatedRows[rowIndex], [key]: cellValue };
+    let newRow = { ...updatedRows[rowIndex], [key]: cellValue };
 
-    // --- NEW PIVOT & CROSS-TABLE CALCULATION LOGIC ---
-    // We only calculate down the column if a product data cell changes
+    // --- MUTUALLY EXCLUSIVE CHECKBOX LOGIC (For Section C/D) ---
+    // If user checks "Yes", automatically uncheck "No"
+    if (key === "isYes" && cellValue === true) {
+      newRow.isNo = false;
+    }
+    // If user checks "No", automatically uncheck "Yes"
+    if (key === "isNo" && cellValue === true) {
+      newRow.isYes = false;
+    }
+
+    // --- OTHER SPECIFICATION CLEANUP ---
+    if (key === "position" && cellValue !== "other") {
+      newRow.positionOther = "";
+    }
+
+    updatedRows[rowIndex] = newRow;
+
+    // --- PIVOT & CROSS-TABLE CALCULATION LOGIC ---
     if (key !== "parameter") {
-      // 1. Gather all numbers in this column from the CURRENT table
       const colData: Record<string, number> = {};
       updatedRows.forEach((r) => {
         if (r.id) colData[r.id] = Number(r[key]) || 0;
       });
 
-      // 2. Loop through rows to see if any have a formula
       updatedRows.forEach((r, i) => {
         if (r.calculate) {
           let formula = r.calculate;
           let contextData = { ...colData };
 
-          // 3. Pull in data from OTHER tables if needed (e.g., getting unitCost)
           if (r.calculateTable && formData[r.calculateTable]) {
             const externalTable = formData[r.calculateTable];
             externalTable.forEach((extRow: any) => {
@@ -52,29 +65,23 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], formData = {}, onCh
             });
           }
 
-          // 4. Replace variables in the string with actual numbers
-          // Sort keys by length so things like "A1" replace before "A"
           const sortedKeys = Object.keys(contextData).sort((a, b) => b.length - a.length);
           sortedKeys.forEach((k) => {
             const regex = new RegExp(`\\b${k}\\b`, "g");
             formula = formula.replace(regex, contextData[k].toString());
           });
 
-          // 5. Safely execute the math
           try {
-            // eslint-disable-next-line no-new-func
             const result = new Function(`return ${formula}`)();
             updatedRows[i][key] = isNaN(result) || !isFinite(result) ? "" : Number(result.toFixed(2));
-            // Update colData so rows further down can use this new result
             colData[r.id] = updatedRows[i][key];
           } catch (e) {
-            console.error(`Calculation error in row ${r.id}:`, e);
+            console.error(`Calculation error:`, e);
           }
         }
       });
     }
 
-    // --- OLD HORIZONTAL CALCULATION (Kept so your other standard tables don't break) ---
     field.columns.forEach((col) => {
       if (col.calculate) {
         updatedRows[rowIndex][col.key] = col.calculate(updatedRows[rowIndex]);
@@ -107,7 +114,7 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], formData = {}, onCh
           <thead>
             <tr>
               {field.columns.map((col) => (
-                <th key={col.key} style={{ width: col.width || "auto", padding: 8, border: "1px solid #ddd", textAlign: "left" }}>
+                <th key={col.key} style={{ width: col.width || "auto", padding: 8, border: "1px solid #ddd", textAlign: "left", backgroundColor: "#f8f9fa" }}>
                   {col.label}
                 </th>
               ))}
@@ -117,7 +124,7 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], formData = {}, onCh
             {rows.map((row, rowIndex) => {
               if (row.isHeader) {
                 return (
-                  <tr key={rowIndex} className="table-category-header">
+                  <tr key={rowIndex}>
                     <td colSpan={field.columns.length} style={{ backgroundColor: "#e9ecef", fontWeight: "bold", padding: "10px", border: "1px solid #ccc" }}>
                       {row.tool}
                     </td>
@@ -128,32 +135,34 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], formData = {}, onCh
               return (
                 <tr key={rowIndex}>
                   {field.columns.map((col) => {
-                    // --- NEW DYNAMIC CELL RENDER LOGIC ---
                     const isParam = col.key === "parameter";
-                    // Parameters are always text. Other cells look at the Row, then Column, then default to text.
                     const cellType = isParam ? "text" : (row.inputType || col.type || "text");
-                    // Parameters are always read-only.
-                    const cellReadOnly = isParam ? true : (row.readOnly || col.readOnly);
+                    
+                    let isReadOnly = isParam || row.readOnly || col.readOnly;
+                    
+                    if (col.key === "positionOther" && row.position !== "other") {
+                      isReadOnly = true;
+                    }
+
                     const cellOptions = row.options || col.options;
-                    const cellMax = row.max;
 
                     return (
                       <td key={col.key} style={{ width: col.width || "auto", padding: 4, border: "1px solid #ddd" }}>
-                        {cellReadOnly ? (
-                          <div style={{ padding: "8px", backgroundColor: "#f9f9f9", minHeight: "36px" }}>
-                            {row[col.key] || ""}
+                        {isReadOnly ? (
+                          <div style={{ 
+                            padding: "8px", 
+                            backgroundColor: col.key === "positionOther" ? "#eee" : "#f9f9f9", 
+                            color: col.key === "positionOther" ? "#bbb" : "#333",
+                            minHeight: "36px",
+                            fontSize: "14px"
+                          }}>
+                            {row[col.key] || (col.key === "positionOther" ? "N/A" : "")}
                           </div>
-                        ) : cellType === "textarea" ? (
-                          <textarea
-                            value={row[col.key] || ""}
-                            onChange={(e) => handleCellChange(rowIndex, col.key, e.target.value)}
-                            style={{ width: "100%", padding: 6 }}
-                          />
                         ) : cellType === "select" ? (
                           <select
                             value={row[col.key] || ""}
                             onChange={(e) => handleCellChange(rowIndex, col.key, e.target.value)}
-                            style={{ width: "100%", padding: 6 }}
+                            style={{ width: "100%", padding: 6, borderRadius: 4, border: "1px solid #ccc" }}
                           >
                             <option value="">Select...</option>
                             {cellOptions?.map((option: any) => (
@@ -162,17 +171,32 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], formData = {}, onCh
                               </option>
                             ))}
                           </select>
+                        ) : cellType === "checkbox" ? (
+                          <div style={{ textAlign: "center", padding: "4px" }}>
+                            <input
+                              type="checkbox"
+                              checked={!!row[col.key]}
+                              onChange={(e) => handleCellChange(rowIndex, col.key, e.target.checked)}
+                              style={{ 
+                                width: "20px", 
+                                height: "20px", 
+                                cursor: "pointer",
+                                accentColor: col.key === "isYes" ? "#2846a7" : col.key === "isNo" ? "#2846a7" : "auto"
+                              }}
+                            />
+                          </div>
                         ) : (
                           <input
                             type={cellType}
-                            max={cellMax}
                             value={row[col.key] || ""}
-                            onChange={(e) => {
-                              // If there's a max limit, block them from typing a higher number
-                              if (cellMax !== undefined && Number(e.target.value) > cellMax) return;
-                              handleCellChange(rowIndex, col.key, e.target.value);
+                            placeholder={col.key === "positionOther" ? "Specify..." : ""}
+                            onChange={(e) => handleCellChange(rowIndex, col.key, e.target.value)}
+                            style={{ 
+                              width: "100%", 
+                              padding: 6, 
+                              borderRadius: 4, 
+                              border: col.key === "positionOther" ? "1px solid #28a745" : "1px solid #ccc" 
                             }}
-                            style={{ width: "100%", padding: 6 }}
                           />
                         )}
                       </td>
@@ -186,7 +210,7 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], formData = {}, onCh
       </div>
 
       {!isFixedTable && (
-        <button type="button" onClick={addRow} style={{ marginTop: 10, padding: "8px 16px", cursor: "pointer" }}>
+        <button type="button" onClick={addRow} style={{ marginTop: 10, padding: "8px 16px", borderRadius: 4, border: "none", background: "#3746d1", color: "#fff", fontWeight: 600, cursor: "pointer" }}>
           + Add Row
         </button>
       )}
