@@ -19,7 +19,6 @@ export const section8: FormSection = {
           name: "malariaScreeningVsMrdt",
           label: "Malaria: Reporting on screening vs records of mRDT issues",
           type: "table",
-          // Visibility: Only if 'Malaria RDT' is checked 'Yes' in Section 1 Lab Table
           visibleWhen: [
             { field: "hasLaboratory", equals: "yes" },
             { 
@@ -29,8 +28,8 @@ export const section8: FormSection = {
           ],
           columns: [
             { key: "month", label: "Month", type: "text", readOnly: true, width: "10%" }, 
-            { key: "peopleTested", label: "Reported tested (MOH 705A/B/706)", type: "number" },
-            { key: "mrdtConsumed", label: "mRDT consumed (MOH 643/743)", type: "number" },
+            { key: "peopleTested", label: "Reported tested (MOH 705A/B/706)", type: "number", min: 0 }, // min added
+            { key: "mrdtConsumed", label: "mRDT consumed (MOH 643/743)", type: "number", min: 0 }, // min added
             { 
               key: "ratio", 
               label: "Ratio (%)", 
@@ -55,9 +54,9 @@ export const section8: FormSection = {
           ],
           columns: [
             { key: "month", label: "Month", type: "text", readOnly: true, width: "10%" },
-            { key: "positiveCases", label: "Positive mRDT + Micro (MOH 705A/B/706)", type: "number" },
-            { key: "patientsTreated", label: "Patients treated (MOH 743)", type: "number" },
-            { key: "alIssued", label: "AL packs issued (MOH 743)", type: "number" },
+            { key: "positiveCases", label: "Positive mRDT + Micro (MOH 705A/B/706)", type: "number", min: 0 }, // min added
+            { key: "patientsTreated", label: "Patients treated (MOH 743)", type: "number", min: 0 }, // min added
+            { key: "alIssued", label: "AL packs issued (MOH 743)", type: "number", min: 0 }, // min added
             { 
               key: "ratio", 
               label: "% AL/Positive cases", 
@@ -78,7 +77,6 @@ export const section8: FormSection = {
           name: "hivScreeningVsRdt",
           label: "HIV: Reporting on screening vs HIV RDT issues",
           type: "table",
-          // Visibility: Only if 'HIV Screening test' is checked 'Yes' in Section 1 Lab Table
           visibleWhen: [
             { field: "hasLaboratory", equals: "yes" },
             { 
@@ -88,8 +86,8 @@ export const section8: FormSection = {
           ],
           columns: [
             { key: "month", label: "Month", type: "text", readOnly: true, width: "10%" },
-            { key: "peopleScreened", label: "Screened (MOH 731)", type: "number" },
-            { key: "trinscreenUsed", label: "Trinscreen consumed (MOH 643)", type: "number" },
+            { key: "peopleScreened", label: "Screened (MOH 731)", type: "number", min: 0 }, // min added
+            { key: "trinscreenUsed", label: "Trinscreen consumed (MOH 643)", type: "number", min: 0 }, // min added
             { 
               key: "ratio", 
               label: "Ratio (%)", 
@@ -114,9 +112,9 @@ export const section8: FormSection = {
           ],
           columns: [
             { key: "month", label: "Month", type: "text", readOnly: true, width: "10%" },
-            { key: "positiveTests", label: "Positive HIV tests (MOH 731)", type: "number" },
-            { key: "putOnTreatment", label: "Put on treatment (MOH 731)", type: "number" },
-            { key: "arvsIssued", label: "ARVs issued (MOH 367 A)", type: "number" },
+            { key: "positiveTests", label: "Positive HIV tests (MOH 731)", type: "number", min: 0 }, // min added
+            { key: "putOnTreatment", label: "Put on treatment (MOH 731)", type: "number", min: 0 }, // min added
+            { key: "arvsIssued", label: "ARVs issued (MOH 367 A)", type: "number", min: 0 }, // min added
             { 
               key: "ratio", 
               label: "% ARV/On treatment", 

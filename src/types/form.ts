@@ -63,6 +63,7 @@ export interface TableColumn {
   computed?: boolean;
   width?: string; 
   max?: number;
+  min?: number;
   calculate?: (row: Record<string, any>) => string | number;
 }
 

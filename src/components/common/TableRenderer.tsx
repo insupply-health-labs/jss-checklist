@@ -147,8 +147,6 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], formData = {}, onCh
                       isReadOnly = true;
                     }
 
-                    // --- SECTION 7: VERTICAL READ-ONLY LOGIC ---
-                    // If this is the "daysStockedOut" row, check if the "stockOut3Months" row says "no"
                     if (row.id === "daysStockedOut") {
                       const stockOutRow = rows.find(r => r.id === "stockOut3Months");
                       if (stockOutRow && stockOutRow[col.key] === "no") {
@@ -157,9 +155,10 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], formData = {}, onCh
                     }
 
                     const cellMax = col.max !== undefined ? col.max : row.max;
+                    const cellMin = col.min !== undefined ? col.min : row.min;
+
                     const cellOptions = row.options || col.options;
 
-                    // If it is read-only because of vertical logic or param logic, gray it out
                     return (
                       <td key={col.key} style={{ width: col.width || "auto", padding: 4, border: "1px solid #ddd" }}>
                         {isReadOnly ? (
@@ -203,11 +202,14 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], formData = {}, onCh
                           <input
                             type={cellType}
                             max={cellMax}
+                            min={cellMax}
                             value={row[col.key] || ""}
                             placeholder={col.key === "positionOther" ? "Specify..." : ""}
                             onChange={(e) => {
-                              if (cellType === "number" && cellMax !== undefined && Number(e.target.value) > cellMax) {
-                                return; 
+                              if (cellType === "number") {
+                                const val = Number(e.target.value);
+                                if (cellMax !== undefined && val > cellMax) return; 
+                                if (cellMin !== undefined && val < cellMin) return; 
                               }
                               handleCellChange(rowIndex, col.key, e.target.value);
                             }}
