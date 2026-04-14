@@ -307,6 +307,7 @@ export const section1: FormSection = {
         {
           name: "lastDisposalDate",
           label: "Date of last disposal activity",
+          visibleWhen: [{field:"wasteDisposalDocsFO58", equals: "available" }],
           type: "date",
           helperText: "Note: If date is unknown or not remembered, please enter 01/01/1900.",
           placeholder: "dd/mm/yyyy"
