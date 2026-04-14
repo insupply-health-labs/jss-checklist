@@ -27,6 +27,7 @@ export const section7: FormSection = {
         {
           name: "stockCardAccuracy",
           label: "Stock Card Accuracy at Health Facility (At time of visit)",
+          isFixed: true,
           type: "table",
           columns: productColumns,
           defaultValue: [
@@ -42,6 +43,7 @@ export const section7: FormSection = {
         {
           name: "issuesFromHigherLevel",
           label: "Issues from Higher Level (KEMSA or MEDS) -- Latest Delivery at Health Facility",
+          isFixed: true,
           type: "table",
           columns: productColumns,
           defaultValue: [
@@ -59,6 +61,7 @@ export const section7: FormSection = {
         {
           name: "issuesToLowerFacilities",
           label: "Issues to Other/Lower Health Facilities",
+          isFixed: true,
           type: "table",
           columns: productColumns,
           defaultValue: [
@@ -72,6 +75,7 @@ export const section7: FormSection = {
         {
           name: "storeToDispensingUnit",
           label: "From Health Facility Store to Dispensing Unit",
+          isFixed: true,
           type: "table",
           columns: productColumns,
           defaultValue: [
@@ -86,6 +90,7 @@ export const section7: FormSection = {
         {
           name: "stockMovementAnalysis",
           label: "Stock Movement Analysis (Facility) - Review Period = Past Calendar Year (2024)",
+          isFixed: true,
           type: "table",
           columns: productColumns,
           defaultValue: [

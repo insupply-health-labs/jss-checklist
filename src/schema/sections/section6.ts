@@ -29,6 +29,7 @@ export const section6: FormSection = {
         {
           name: "poorQualityProductsTable",
           label: "List poor quality products",
+          isFixed: true, 
           type: "table",
           visibleWhen: [{ field: "suspectedPoorQualityProducts",
              equals: "yes" }],

@@ -319,6 +319,7 @@ export const section1: FormSection = {
       fields: [
         {
           name: "treatmentServices",
+          isFixed: true,
           label: "Treatment Services Offered",
           type: "table",
           columns: [

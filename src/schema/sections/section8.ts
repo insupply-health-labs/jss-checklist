@@ -18,6 +18,7 @@ export const section8: FormSection = {
         {
           name: "malariaScreeningVsMrdt",
           label: "Malaria: Reporting on screening vs records of mRDT issues",
+          isFixed: true,
           type: "table",
           visibleWhen: [
             { field: "hasLaboratory", equals: "yes" },
@@ -28,8 +29,8 @@ export const section8: FormSection = {
           ],
           columns: [
             { key: "month", label: "Month", type: "text", readOnly: true, width: "10%" }, 
-            { key: "peopleTested", label: "Reported tested (MOH 705A/B/706)", type: "number", min: 0 }, // min added
-            { key: "mrdtConsumed", label: "mRDT consumed (MOH 643/743)", type: "number", min: 0 }, // min added
+            { key: "peopleTested", label: "Reported tested (MOH 705A/B/706)", type: "number", min: 0 }, 
+            { key: "mrdtConsumed", label: "mRDT consumed (MOH 643/743)", type: "number", min: 0 }, 
             { 
               key: "ratio", 
               label: "Ratio (%)", 
@@ -44,6 +45,7 @@ export const section8: FormSection = {
         {
           name: "malariaTreatmentTriangulation",
           label: "Malaria: Positive cases vs AL treatments supplied",
+          isFixed: true,
           type: "table",
           visibleWhen: [
             { field: "hasLaboratory", equals: "yes" },
@@ -54,9 +56,9 @@ export const section8: FormSection = {
           ],
           columns: [
             { key: "month", label: "Month", type: "text", readOnly: true, width: "10%" },
-            { key: "positiveCases", label: "Positive mRDT + Micro (MOH 705A/B/706)", type: "number", min: 0 }, // min added
-            { key: "patientsTreated", label: "Patients treated (MOH 743)", type: "number", min: 0 }, // min added
-            { key: "alIssued", label: "AL packs issued (MOH 743)", type: "number", min: 0 }, // min added
+            { key: "positiveCases", label: "Positive mRDT + Micro (MOH 705A/B/706)", type: "number", min: 0 }, 
+            { key: "patientsTreated", label: "Patients treated (MOH 743)", type: "number", min: 0 }, 
+            { key: "alIssued", label: "AL packs issued (MOH 743)", type: "number", min: 0 }, 
             { 
               key: "ratio", 
               label: "% AL/Positive cases", 
@@ -76,6 +78,7 @@ export const section8: FormSection = {
         {
           name: "hivScreeningVsRdt",
           label: "HIV: Reporting on screening vs HIV RDT issues",
+          isFixed: true,
           type: "table",
           visibleWhen: [
             { field: "hasLaboratory", equals: "yes" },
@@ -86,8 +89,8 @@ export const section8: FormSection = {
           ],
           columns: [
             { key: "month", label: "Month", type: "text", readOnly: true, width: "10%" },
-            { key: "peopleScreened", label: "Screened (MOH 731)", type: "number", min: 0 }, // min added
-            { key: "trinscreenUsed", label: "Trinscreen consumed (MOH 643)", type: "number", min: 0 }, // min added
+            { key: "peopleScreened", label: "Screened (MOH 731)", type: "number", min: 0 }, 
+            { key: "trinscreenUsed", label: "Trinscreen consumed (MOH 643)", type: "number", min: 0 }, 
             { 
               key: "ratio", 
               label: "Ratio (%)", 
@@ -102,6 +105,7 @@ export const section8: FormSection = {
         {
           name: "hivTreatmentTriangulation",
           label: "HIV: Positive cases vs ARV treatments supplied",
+          isFixed: true,
           type: "table",
           visibleWhen: [
             { field: "hasLaboratory", equals: "yes" },
@@ -112,9 +116,9 @@ export const section8: FormSection = {
           ],
           columns: [
             { key: "month", label: "Month", type: "text", readOnly: true, width: "10%" },
-            { key: "positiveTests", label: "Positive HIV tests (MOH 731)", type: "number", min: 0 }, // min added
-            { key: "putOnTreatment", label: "Put on treatment (MOH 731)", type: "number", min: 0 }, // min added
-            { key: "arvsIssued", label: "ARVs issued (MOH 367 A)", type: "number", min: 0 }, // min added
+            { key: "positiveTests", label: "Positive HIV tests (MOH 731)", type: "number", min: 0 }, 
+            { key: "putOnTreatment", label: "Put on treatment (MOH 731)", type: "number", min: 0 }, 
+            { key: "arvsIssued", label: "ARVs issued (MOH 367 A)", type: "number", min: 0 }, 
             { 
               key: "ratio", 
               label: "% ARV/On treatment", 

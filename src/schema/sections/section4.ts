@@ -11,6 +11,7 @@ export const section4: FormSection = {
         {
           name: "recordingReportingTools",
           type: "table",
+          isFixed: true, 
           label: "Recording and Reporting Tools",
           columns: [
             { key: "tool", label: "TOOL", type: "text", readOnly: true },

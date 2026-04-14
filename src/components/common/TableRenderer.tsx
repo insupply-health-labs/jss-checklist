@@ -102,7 +102,7 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], formData = {}, onCh
     onChange(calculateTableRows(field.name, updated));
   };
 
-  const isFixedTable = field.defaultValue && field.defaultValue.length > 0;
+  const isFixedTable = field.isFixed === true;
 
   return (
     <div style={{ marginBottom: 24 }}>

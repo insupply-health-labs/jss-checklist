@@ -36,6 +36,7 @@ export interface BaseField {
   defaultValue?:any;
   min?: number;
   max?: number;
+  isFixed?: boolean;
 }
 
 export interface InputField extends BaseField {

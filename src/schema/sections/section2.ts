@@ -24,6 +24,7 @@ export const section2: FormSection = {
         {
           name: "capacityBuildingTopics",
           label: "Which topics did they cover?",
+          isFixed: true,
           type: "table",
           visibleWhen: [{ field: "capacityBuildingDone", equals: "yes" }],
           columns: [
@@ -81,7 +82,7 @@ export const section2: FormSection = {
           name: "trainingDuration",
           label: "Duration of training (in days)",
           type: "number",
-          min: 1, // Prevents 0 or negative days
+          min: 1, 
           placeholder: "e.g. 5",
           visibleWhen: [{ field: "staffTrainedCommodityManagement", equals: "yes" }]
         },

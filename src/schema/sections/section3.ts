@@ -21,6 +21,7 @@ export const section3: FormSection = {
         {
           name: "treatmentGuidelinesTable",
           label: "",
+          isFixed: true, 
           type: "table",
           columns: guidelineColumns,
           defaultValue: [
@@ -39,6 +40,7 @@ export const section3: FormSection = {
         {
           name: "commodityManagementGuidelinesTable",
           label: "",
+          isFixed: true, 
           type: "table",
           columns: guidelineColumns,
           defaultValue: [
@@ -57,6 +59,7 @@ export const section3: FormSection = {
         {
           name: "diagnosticAlgorithmsTable",
           label: "",
+          isFixed: true, 
           type: "table",
           columns: [
             { key: "guideline", label: "Algorithm", type: "text", readOnly: true },
@@ -76,19 +79,19 @@ export const section3: FormSection = {
       fields: [
         {
           name: "commoditySopsTable",
-          label: "",
+          label: "List available SOPs (Add rows for others found in facility)",
           type: "table",
           columns: [
-            { key: "guideline", label: "SOP", type: "text", readOnly: true },
+            { key: "guideline", label: "SOP Name", type: "text" },
             { key: "available", label: "Available Yes/No", type: "select", options: yesNoOptions },
-            { key: "year", label: "If yes, specify which year?", type: "number", max: currentYear },
           ],
           defaultValue: [
-            { guideline: "Storage", available: "", year: "" },
-            { guideline: "Receiving", available: "", year: "" },
-            { guideline: "Issuing", available: "", year: "" },
-            { guideline: "Waste management", available: "", year: "" },
+            { guideline: "Storage", available: "" },
+            { guideline: "Receiving", available: "" },
+            { guideline: "Issuing", available: "" },
+            { guideline: "Waste management", available: "" },
           ],
+          minRows: 4, 
         },
       ],
     },
@@ -97,19 +100,19 @@ export const section3: FormSection = {
       fields: [
         {
           name: "jobAidsTable",
-          label: "",
+          label: "List available Job Aids (Add rows for others found in facility)",
           type: "table",
           columns: [
-            { key: "guideline", label: "Job Aid", type: "text", readOnly: true },
+            { key: "guideline", label: "Job Aid Name", type: "text" },
             { key: "available", label: "Available Yes/No", type: "select", options: yesNoOptions },
-            { key: "year", label: "If yes, specify which year?", type: "number", max: currentYear },
           ],
           defaultValue: [
-            { guideline: "Malaria", available: "", year: "" },
-            { guideline: "FP", available: "", year: "" },
-            { guideline: "HIV", available: "", year: "" },
-            { guideline: "TB", available: "", year: "" },
+            { guideline: "Malaria", available: "" },
+            { guideline: "FP", available: "" },
+            { guideline: "HIV", available: "" },
+            { guideline: "TB", available: "" },
           ],
+          minRows: 4,
         },
       ],
     },

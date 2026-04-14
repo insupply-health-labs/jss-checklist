@@ -11,10 +11,10 @@ export const summaryMappings = [
   { key: "patientCommodityTriangulationConclusion", title: "Patient and Commodity Data Triangulation" }
 ];
 
-// 1. Generate the 8 Overview Tables
 const generatedOverviewTables = summaryMappings.map((mapping) => ({
   name: `overview_${mapping.key}`, 
-  label: mapping.title,            
+  label: mapping.title,  
+  isFixed: true,          
   type: "table" as const,
   columns: [
     { key: "bestPractice", label: "BEST PRACTICES", type: "textarea" as const, readOnly: true },
@@ -24,16 +24,13 @@ const generatedOverviewTables = summaryMappings.map((mapping) => ({
   defaultValue: [{ bestPractice: "", mainIssues: "", underlyingCauses: "" }],
 }));
 
-// 2. Generate the 8 Action Plan Tables
 const generatedActionPlanTables = summaryMappings.map((mapping) => ({
   name: `actionPlan_${mapping.key}`, 
-  label: mapping.title,            
+  label: mapping.title,  
+  isFixed: true,          
   type: "table" as const,
   columns: [
-    // Read-only: Automatically pulled from the gaps identified earlier
     { key: "issueGap", label: "ISSUE/GAP IDENTIFIED", type: "textarea" as const, readOnly: true }, 
-    
-    // Editable: Action plan fields
     { key: "desiredResult", label: "DESIRED RESULT", type: "textarea" as const },
     { key: "actionRequired", label: "ACTION REQUIRED", type: "textarea" as const },
     { key: "responsiblePerson", label: "RESPONSIBLE PERSON", type: "text" as const },
