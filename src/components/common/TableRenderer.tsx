@@ -29,13 +29,22 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], formData = {}, onCh
     const updatedRows = [...rows];
     let newRow = { ...updatedRows[rowIndex], [key]: cellValue };
 
-    // --- MUTUALLY EXCLUSIVE CHECKBOX LOGIC (For Section C/D) ---
+    // --- MUTUALLY EXCLUSIVE CHECKBOX LOGIC ---
     if (key === "isYes" && cellValue === true) newRow.isNo = false;
     if (key === "isNo" && cellValue === true) newRow.isYes = false;
 
     // --- OTHER SPECIFICATION CLEANUP ---
     if (key === "position" && cellValue !== "other") {
       newRow.positionOther = "";
+    }
+
+    // --- SECTION 7: STOCK-OUT CLEANUP ---
+    // If they change "Stock-out" to "no", automatically clear any previously entered days
+    if (newRow.id === "stockOut3Months" && cellValue === "no") {
+      const daysRowIndex = updatedRows.findIndex(r => r.id === "daysStockedOut");
+      if (daysRowIndex !== -1) {
+        updatedRows[daysRowIndex] = { ...updatedRows[daysRowIndex], [key]: "" };
+      }
     }
 
     updatedRows[rowIndex] = newRow;
@@ -138,21 +147,30 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], formData = {}, onCh
                       isReadOnly = true;
                     }
 
-                    // --- NEW LINE: Extract cellMax from the column ---
+                    // --- SECTION 7: VERTICAL READ-ONLY LOGIC ---
+                    // If this is the "daysStockedOut" row, check if the "stockOut3Months" row says "no"
+                    if (row.id === "daysStockedOut") {
+                      const stockOutRow = rows.find(r => r.id === "stockOut3Months");
+                      if (stockOutRow && stockOutRow[col.key] === "no") {
+                        isReadOnly = true;
+                      }
+                    }
+
                     const cellMax = col.max !== undefined ? col.max : row.max;
                     const cellOptions = row.options || col.options;
 
+                    // If it is read-only because of vertical logic or param logic, gray it out
                     return (
                       <td key={col.key} style={{ width: col.width || "auto", padding: 4, border: "1px solid #ddd" }}>
                         {isReadOnly ? (
                           <div style={{ 
                             padding: "8px", 
-                            backgroundColor: col.key === "positionOther" ? "#eee" : "#f9f9f9", 
-                            color: col.key === "positionOther" ? "#bbb" : "#333",
+                            backgroundColor: (col.key === "positionOther" || row.id === "daysStockedOut") ? "#eee" : "#f9f9f9", 
+                            color: (col.key === "positionOther" || row.id === "daysStockedOut") ? "#bbb" : "#333",
                             minHeight: "36px",
                             fontSize: "14px"
                           }}>
-                            {row[col.key] || (col.key === "positionOther" ? "N/A" : "")}
+                            {row[col.key] || (col.key === "positionOther" ? "N/A" : row.id === "daysStockedOut" ? "N/A" : "")}
                           </div>
                         ) : cellType === "select" ? (
                           <select
@@ -184,13 +202,12 @@ const TableRenderer: React.FC<Props> = ({ field, value = [], formData = {}, onCh
                         ) : (
                           <input
                             type={cellType}
-                            max={cellMax} // --- NEW LINE ---
+                            max={cellMax}
                             value={row[col.key] || ""}
                             placeholder={col.key === "positionOther" ? "Specify..." : ""}
                             onChange={(e) => {
-                              // --- NEW GUARD LOGIC ---
                               if (cellType === "number" && cellMax !== undefined && Number(e.target.value) > cellMax) {
-                                return; // Block it!
+                                return; 
                               }
                               handleCellChange(rowIndex, col.key, e.target.value);
                             }}
