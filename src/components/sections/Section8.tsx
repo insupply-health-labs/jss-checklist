@@ -10,18 +10,17 @@ interface Props {
 }
 
 const Section8: React.FC<Props> = ({ formData, onChange }) => {
-  // 1. Check statuses from Section 1
   const hasLab = formData.hasLaboratory; // "yes" or "no"
+  
   const malariaAvailability = useMemo(() => getMalariaRdtAvailability(formData), [formData]);
   const hivAvailability = useMemo(() => getHivScreeningAvailability(formData), [formData]);
 
-  // 2. Dynamically modify the schema based on individual test availability
   const dynamicallyFilteredSection8 = useMemo(() => {
     const modifiedGroups = section8.groups.map((group) => {
       
       // --- MALARIA LOGIC ---
       if (group.title === "Malaria Triangulation") {
-        if (hasLab === "no" || malariaAvailability === "no") {
+        if (hasLab === "no" || malariaAvailability === false) {
           return {
             ...group,
             fields: [
@@ -38,7 +37,7 @@ const Section8: React.FC<Props> = ({ formData, onChange }) => {
 
       // --- HIV LOGIC ---
       if (group.title === "HIV Triangulation") {
-        if (hasLab === "no" || hivAvailability === "no") {
+        if (hasLab === "no" || hivAvailability === false) {
           return {
             ...group,
             fields: [
@@ -53,7 +52,6 @@ const Section8: React.FC<Props> = ({ formData, onChange }) => {
         }
       }
 
-      // If the group doesn't need to be skipped, return it normally
       return group;
     });
 
