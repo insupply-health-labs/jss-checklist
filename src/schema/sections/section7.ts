@@ -4,12 +4,12 @@ import { makeSectionSummary, yesNoOptions } from "../../utils/helpers";
 // Define the columns once so we can reuse them across all the sub-tables
 const productColumns: TableColumn[] = [
   { key: "parameter", label: "Table: Stock Movement", type: "text", readOnly: true },
-  //{ key: "hivAdult", label: "HIV 1st line adult TDF/3TC/DTG (300/300/ 50mg) 90s", type: "text" }, 
-  { key: "hivPaed", label: "HIV 1st line paed – ABC+3TC (120/60mg) 30s", type: "text" },
+  { key: "hivAdult", label: "HIV 1st line adult TDF/3TC/DTG (300/300/ 50mg) 90s", type: "text" }, 
+  { key: "hivPaed", label: "HIV 1st line paed – ABC+3TC+ DTG (60/30/5mg) 90s", type: "text" },
   { key: "hivRdt", label: "HIV RDT - Trinscreen", type: "text" },
   { key: "tbAdult", label: "1st line adults – Patient packs RHZE pack", type: "text" },
   { key: "tbPaed", label: "1st line paeds – RHZ 84s", type: "text" },
-  { key: "tb2ndLine", label: "2nd line – Bedaquiline (100 mg) 188s", type: "text" },
+  //{ key: "tb2ndLine", label: "2nd line – Bedaquiline (100 mg) 188s", type: "text" },
   { key: "al6s", label: "AL, 6s Dose", type: "text" },
   { key: "al24s", label: "AL, 24s Dose", type: "text" },
   { key: "mRdt", label: "mRDTs Test", type: "text" },
