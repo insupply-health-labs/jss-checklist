@@ -61,11 +61,66 @@ const App: React.FC = () => {
 
   // --- Submit Logic ---
   const handleSubmit = async () => {
+    
+    const validateSection1 = (data: Record<string, any>) => {
+      const missing: string[] = [];
+
+      const isEmpty = (val: any) => val === undefined || val === null || String(val).trim() === "";
+
+      const generalFields = ["facilityName", "dateOfVisit", "supervisionTeamNo", "teamLeader", "respondentName", "respondentPosition", "respondentPhone"];
+      generalFields.forEach(f => { if (isEmpty(data[f])) missing.push(f); });
+      
+      if (data.respondentPosition === "other" && isEmpty(data.respondentPositionOther)) {
+        missing.push("respondentPositionOther");
+      }
+
+      const govParents = [
+        "facilityManagementTeam", 
+        "qualityImprovementTeam", 
+        "mtcAvailable", 
+        "advanceDeliveryAlert", 
+        "haswasteDisposalCommitteeMembers", 
+        "wasteDisposalDocsFO58"
+      ];
+      govParents.forEach(f => { if (isEmpty(data[f])) missing.push(f); });
+
+      if (!data.hptReceiptFocalPersons || data.hptReceiptFocalPersons.length === 0) {
+        missing.push("hptReceiptFocalPersons");
+      } else if (data.hptReceiptFocalPersons.includes("other") && isEmpty(data.hptReceiptOther)) {
+        missing.push("hptReceiptOther");
+      }
+
+      if (data.facilityManagementTeam === "available" && isEmpty(data.facilityManagementMinutes)) missing.push("facilityManagementMinutes");
+      if (data.facilityManagementMinutes === "available" && isEmpty(data.facilityManagementLastMeetingDate)) missing.push("facilityManagementLastMeetingDate");
+
+      if (data.qualityImprovementTeam === "available" && isEmpty(data.qualityImprovementMinutes)) missing.push("qualityImprovementMinutes");
+      if (data.qualityImprovementMinutes === "available" && isEmpty(data.qualityImprovementLastMeetingDate)) missing.push("qualityImprovementLastMeetingDate");
+
+      if (data.mtcAvailable === "available" && isEmpty(data.mtcMinutes)) missing.push("mtcMinutes");
+      if (data.mtcMinutes === "available" && isEmpty(data.mtcLastMeetingDate)) missing.push("mtcLastMeetingDate");
+
+      if (data.haswasteDisposalCommitteeMembers === "yes" && isEmpty(data.wasteDisposalMinutes)) missing.push("wasteDisposalMinutes");
+      if (data.wasteDisposalDocsFO58 === "available" && isEmpty(data.lastDisposalDate)) missing.push("lastDisposalDate");
+
+      if (isEmpty(data.hasLaboratory)) missing.push("hasLaboratory");
+
+      return missing;
+    };
+
+    const missingFields = validateSection1(formData);
+
+    if (missingFields.length > 0) {
+      console.warn("Missing fields:", missingFields);
+      alert("Please ensure you have answered all Section 1 questions (Parts A, B, C, and D).");
+      setCurrentSection(1); 
+      return; 
+    }
+
     if (!window.confirm("Are you sure you want to submit the final report?")) return;
     
     setIsSubmitting(true);
     try {
-      const googleScriptUrl = "https://script.google.com/macros/s/AKfycbyXEomRwa5hV6oQHszocTzWE9AggmuLK7csxLlpkg1mss0fcant9UT70eJYx-XWOlr5/exec";
+      const googleScriptUrl = "https://script.google.com/macros/s/AKfycbyN5V4btjclvm5decRuKZ2PLV0Hb-_GE_IOlz63EHO5HULr7cWPvdmWLurmafdLshv7/exec";
       
       await fetch(googleScriptUrl, {
         method: "POST",
@@ -213,7 +268,7 @@ const App: React.FC = () => {
                 type="button"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                style={{ backgroundColor: "#28a745" }}
+                style={{ backgroundColor: "#28a745", color: "white" }}
               >
                 {isSubmitting ? "Submitting..." : "Submit"}
               </button>
