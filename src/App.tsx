@@ -65,7 +65,7 @@ const App: React.FC = () => {
     
     setIsSubmitting(true);
     try {
-      const googleScriptUrl = "https://script.google.com/macros/s/AKfycbwnXH41e8s2ljvxdRs9bWxxngCI4AR0jL_DKbXqoaS2s56M7KpvjUll2Z9-lgzIgEZX/exec";
+      const googleScriptUrl = "https://script.google.com/macros/s/AKfycbyXEomRwa5hV6oQHszocTzWE9AggmuLK7csxLlpkg1mss0fcant9UT70eJYx-XWOlr5/exec";
       
       await fetch(googleScriptUrl, {
         method: "POST",
