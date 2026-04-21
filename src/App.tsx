@@ -120,7 +120,7 @@ const App: React.FC = () => {
     
     setIsSubmitting(true);
     try {
-      const googleScriptUrl = "https://script.google.com/macros/s/AKfycbyN5V4btjclvm5decRuKZ2PLV0Hb-_GE_IOlz63EHO5HULr7cWPvdmWLurmafdLshv7/exec";
+      const googleScriptUrl = "https://script.google.com/macros/s/AKfycbwmnIRykX7jhC5r-1JeSmxFa77DiGUDq5gn8VI-A8Knzt1CsjIrpASaDIbZq4RlVtZU/exec";
 
       await fetch(googleScriptUrl, {
         method: "POST",
