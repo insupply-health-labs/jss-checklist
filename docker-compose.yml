@@ -1,0 +1,18 @@
+# Docker Compose configuration for JSS tool
+
+name: jss-tool
+
+services:
+  jss-tool:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jss-tool
+    restart: always
+
+    env_file:
+      - .env
+
+    # Nginx serves the built app on port 80 in the container
+    ports:
+      - "5900:80"
