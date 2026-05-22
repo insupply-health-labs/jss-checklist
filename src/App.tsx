@@ -31,11 +31,15 @@ const App: React.FC = () => {
   const [lastSaved, setLastSaved] = useState<string>("");
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
-    localStorage.setItem(SECTION_KEY, currentSection.toString());
-    
-    const now = new Date();
-    setLastSaved(now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+    const timeoutId = setTimeout(() => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+      localStorage.setItem(SECTION_KEY, currentSection.toString());
+      
+      const now = new Date();
+      setLastSaved(now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
   }, [formData, currentSection]);
 
   const handleChange = (name: string, value: any) => {
@@ -106,7 +110,7 @@ const App: React.FC = () => {
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem(SECTION_KEY);
       setFormData({});
-      setCurrentSection(0); // Reset to General Info
+      setCurrentSection(0); 
 
     } catch (error) {
       alert("There was an error submitting the form. Please try again.");

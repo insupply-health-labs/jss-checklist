@@ -47,13 +47,26 @@ export const applyMflAutofill = (formData: Record<string, any>): Record<string, 
   const facility = mflFacilities.find((item) => item.facilityName === name);
   if (!facility) return formData;
 
+  const mappedOwnership = facility.ownership === "moh" ? "MOH" : facility.ownership;
+
+  // Don't recreate formData object if values are already strictly matching what we want
+  if (
+    formData.facilityMflCode === facility.mflCode &&
+    formData.county === facility.county &&
+    formData.subCounty === facility.subCounty &&
+    formData.facilityLevel === facility.facilityLevel &&
+    formData.ownership === mappedOwnership
+  ) {
+    return formData;
+  }
+
   return {
     ...formData,
     facilityMflCode: facility.mflCode || formData.facilityMflCode || "",
     county: facility.county || formData.county || "",
     subCounty: facility.subCounty || formData.subCounty || "",
     facilityLevel: facility.facilityLevel || formData.facilityLevel || "",
-    ownership: facility.ownership === "moh" ? "MOH" : (facility.ownership || formData.ownership || ""),
+    ownership: mappedOwnership || formData.ownership || "",
   };
 };
 
@@ -131,18 +144,25 @@ export const buildOverviewTable1 = (formData: Record<string, any>): Record<strin
 
 export const buildOverviewTable2 = (formData: Record<string, any>): Record<string, any>[] => {
   const rows: Record<string, any>[] = [];
+  const existingTable2 = Array.isArray(formData.overviewTable2) ? formData.overviewTable2 : [];
+  
   Object.entries(thematicAreaMap).forEach(([summaryFieldName, thematicArea]) => {
     const summaryRows = Array.isArray(formData[summaryFieldName]) ? formData[summaryFieldName] : [];
     summaryRows.forEach((r: any) => {
       if (!r?.keyIssueGap) return;
+      
+      const existingRow = existingTable2.find(
+        (ex: any) => ex.thematicArea === thematicArea && ex.issueGap === r.keyIssueGap
+      );
+
       rows.push({
         thematicArea,
         issueGap: r.keyIssueGap || "",
-        desiredResult: "",
-        actionRequired: "",
-        responsiblePerson: "",
-        resourcesNeeded: "",
-        completionDate: "",
+        desiredResult: existingRow?.desiredResult || "",
+        actionRequired: existingRow?.actionRequired || "",
+        responsiblePerson: existingRow?.responsiblePerson || "",
+        resourcesNeeded: existingRow?.resourcesNeeded || "",
+        completionDate: existingRow?.completionDate || "",
       });
     });
   });
