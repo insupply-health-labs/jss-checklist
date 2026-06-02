@@ -16,15 +16,24 @@ const STORAGE_KEY = "jss_checklist_draft";
 const SECTION_KEY = "jss_current_section";
 
 const App: React.FC = () => {
+  // Safe state initialization prevents fatal crashes from bad local cache
   const [formData, setFormData] = useState<Record<string, any>>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : {};
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) : {};
+    } catch (e) {
+      console.error("Corrupted local storage found. Resetting state safely.", e);
+      return {};
+    }
   });
 
-  // Default to 0 (General Info) instead of 1
   const [currentSection, setCurrentSection] = useState(() => {
-    const saved = localStorage.getItem(SECTION_KEY);
-    return saved ? parseInt(saved, 10) : 0;
+    try {
+      const saved = localStorage.getItem(SECTION_KEY);
+      return saved ? parseInt(saved, 10) : 0;
+    } catch {
+      return 0;
+    }
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -60,7 +69,6 @@ const App: React.FC = () => {
   const handleSubmit = async () => {
     const isEmpty = (val: any) => val === undefined || val === null || String(val).trim() === "";
 
-    // Validate General Info (Section 0) ONLY
     const validateGeneralInfo = (data: Record<string, any>) => {
       const missing: string[] = [];
       const generalFields = [
@@ -87,24 +95,29 @@ const App: React.FC = () => {
     const missingGeneral = validateGeneralInfo(formData);
     
     if (missingGeneral.length > 0) {
-      // Improved alert to show exactly what the system thinks is missing!
       alert(`Please ensure you have filled out all General Information details.\n\nMissing fields: ${missingGeneral.join(", ")}`);
       setCurrentSection(0); 
       return;
     }
 
-
     if (!window.confirm("Are you sure you want to submit the final report?")) return;
     
     setIsSubmitting(true);
+    
     try {
       const googleScriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL as string;
-      await fetch(googleScriptUrl, {
+      
+      const response = await fetch(googleScriptUrl, {
         method: "POST",
-        mode: "no-cors", 
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(formData),
       });
+
+      const result = await response.json();
+
+      if (result.status === "error") {
+        throw new Error(result.message || result.error || "Server rejected the submission.");
+      }
 
       alert("Form submitted successfully!");
       localStorage.removeItem(STORAGE_KEY);
@@ -112,8 +125,9 @@ const App: React.FC = () => {
       setFormData({});
       setCurrentSection(0); 
 
-    } catch (error) {
-      alert("There was an error submitting the form. Please try again.");
+    } catch (error: any) {
+      console.error("Submission failed: ", error);
+      alert(`Submission Error: ${error.message || "We couldn't reach the database server."}\n\nYour current inputs have been saved locally in your browser. Please try clicking submit again.`);
     } finally {
       setIsSubmitting(false);
     }
@@ -124,12 +138,34 @@ const App: React.FC = () => {
     window.open(googleSheetUrl, "_blank");
   };
 
-  const handleReset = () => {
-    if (window.confirm("This will delete all current progress. Are you sure?")) {
-      localStorage.removeItem(STORAGE_KEY);
-      localStorage.removeItem(SECTION_KEY);
-      window.location.reload();
-    }
+  // Clears only the data mapped to the currently active section
+  const handleClearSection = () => {
+    const sectionName = currentSection === 0 ? "General Info" : `Section ${currentSection}`;
+    if (!window.confirm(`Are you sure you want to clear all data for ${sectionName}? This will not affect other tabs.`)) return;
+
+    // Dictionary mapping each section to its specific state keys based on your Apps Script
+    const sectionKeys: Record<number, string[]> = {
+      0: ["facilityName", "county", "subCounty", "facilityLevel", "ownership", "facilityMflCode", "dateOfVisit", "supervisionTeamNo", "teamLeader", "respondentName", "respondentPosition", "respondentPositionOther", "respondentPhone"],
+      1: ["facilityManagementTeam", "facilityManagementMembers", "facilityManagementMinutes", "facilityManagementLastMeetingDate", "qualityImprovementTeam", "qualityImprovementMembers", "qualityImprovementMinutes", "qualityImprovementLastMeetingDate", "mtcAvailable", "mtcMembers", "mtcMinutes", "mtcLastMeetingDate", "hptReceiptFocalPersons", "hptReceiptOther", "advanceDeliveryAlert", "haswasteDisposalCommitteeMembers", "wasteDisposalCommitteeMembers", "wasteDisposalDocsFO58", "wasteDisposalMinutes", "lastDisposalDate", "treatmentServices", "hasLaboratory", "laboratoryTests", "facilityGovernanceAndServicesConclusion"],
+      2: ["receivedCommoditySupervisionVisit", "capacityBuildingDone", "capacityBuildingTopics", "capacityBuildingOtherSpecify", "previousActionPoints", "staffTrainedCommodityManagement", "trainingType", "numberTrained", "trainingDuration", "trainingTopic", "hasCME", "cmeFrequency", "receivedDqaVisit", "dqaVisitBy", "dqaRecommendationsReceived", "hasDqaReport", "dqaReportDate", "humanResourceCapacityBuildingConclusion"],
+      3: ["treatmentGuidelinesTable", "commodityManagementGuidelinesTable", "diagnosticAlgorithmsTable", "commoditySopsTable"],
+      4: ["inventoryToolsTable", "physicalCountTable", "stockCardBalancesTable", "stockOutsTable", "hasExpiredCommodities", "expiredCommoditiesList", "inventoryManagementConclusion"],
+      5: ["receiptVerificationTable", "interFacilityTransfersTable", "dispensingTrackingTable", "accountabilityConclusion"],
+      6: ["reportingTimelinessTable", "dataConcordanceTable", "hasDataReviewMeetings", "dataReviewMeetingFrequency", "scmReportingConclusion"],
+      7: ["storageConditionsTable", "storageCapacityAdequate", "coldChainFunctional", "storageConclusion"],
+      8: ["resupplyMechanism", "orderFrequency", "allocationVsRequestTable", "hasOrderCalculationsDocs", "orderingConclusion"],
+      9: ["actionPlanTable", "facilityInChargeComments", "supervisionTeamComments", "formFillerSignature"]
+    };
+
+    const keysToRemove = sectionKeys[currentSection] || [];
+
+    setFormData((prev) => {
+      const nextData = { ...prev };
+      keysToRemove.forEach((key) => {
+        delete nextData[key]; 
+      });
+      return applyGlobalFormLogic(nextData);
+    });
   };
 
   const renderSection = () => {
@@ -195,8 +231,8 @@ const App: React.FC = () => {
           </div>
 
           <div>
-            <button type="button" onClick={handleReset} style={{ backgroundColor: "#dc3545", marginRight: 10, color: "white" }}>
-              Clear Draft
+            <button type="button" onClick={handleClearSection} style={{ backgroundColor: "#dc3545", marginRight: 10, color: "white" }}>
+              Clear Current Section
             </button>
             
             <button type="button" onClick={handleSeeResults} style={{ backgroundColor: "#6c757d", marginRight: 15 }}>

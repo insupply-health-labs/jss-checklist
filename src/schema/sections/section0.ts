@@ -21,18 +21,18 @@ export const section0: FormSection = {
       title: "A. General",
       className: "general-info-grid", 
       fields: [
-        // --- ROW 1 ---
+        // ROW 1
         { 
           name: "facilityName",
           label: "Facility Name",
           type: "search-select", 
           helperText: "Select a facility",
-          options: mflFacilities
-            .slice()
-            .sort((a, b) => a.facilityName.localeCompare(b.facilityName))
-            .map((facility: any) => ({
-              label: facility.facilityName,
-              value: facility.facilityName
+          options: Array.from(new Set(mflFacilities.map((f: any) => f.facilityName)))
+            .filter(Boolean) 
+            .sort((a, b) => a.localeCompare(b))
+            .map((uniqueName: string) => ({
+              label: uniqueName,
+              value: uniqueName
             }))
         },
         { 
@@ -48,7 +48,7 @@ export const section0: FormSection = {
           readOnly: true 
         },
 
-        // --- ROW 2 ---
+        // ROW 2 
         { 
           name: "facilityLevel",
           label: "Facility Level",
@@ -68,7 +68,7 @@ export const section0: FormSection = {
           readOnly: true 
         },
 
-        // --- ROW 3 ---
+        // ROW 3
         { 
           name: "dateOfVisit",
           label: "Date of Visit:",
@@ -87,7 +87,7 @@ export const section0: FormSection = {
           type: "text" 
         },
 
-        // --- ROW 4 ---
+        // ROW 4
         { 
           name: "respondentName", 
           label: "Name of Respondent", 
@@ -105,7 +105,7 @@ export const section0: FormSection = {
           type: "text" 
         },
 
-        // --- HIDDEN FIELD (Appears only if "Other" is selected) ---
+        // HIDDEN FIELD (Appears only if "Other" is selected) ---
         {
           name: "respondentPositionOther",
           label: "Please specify other position",

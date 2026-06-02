@@ -25,8 +25,7 @@ const Section0: React.FC<Props> = ({ formData, onChange }) => {
       );
 
       if (matchedFacility) {
-        // Cast to 'any' to bypass strict TypeScript interface checking 
-        // since we don't know the exact property names in your JSON
+       
         const facilityData = matchedFacility as any;
 
         // Auto-populate the read-only fields
