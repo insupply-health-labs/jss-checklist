@@ -1,5 +1,6 @@
 import React from "react";
-import "../../App.css"; 
+import "../../App.css";
+const basePath = import.meta.env.VITE_BASE_FRONTEND_PATH as string;
 
 /**
  * Props for the Header component to display dynamic facility information
@@ -16,7 +17,7 @@ const Header: React.FC<HeaderProps> = ({ mflCode, facilityName }) => {
       {/* Main Official Letterhead Banner */}
       <div className="header-banner">
         <div className="header-logo-container">
-          <img src="/coat-of-arms.png" alt="Left Crest" className="header-logo" />
+          <img src={`${basePath}/coat-of-arms.png`} alt="Left Crest" className="header-logo" />
         </div>
         
         <div className="header-titles">
@@ -25,7 +26,7 @@ const Header: React.FC<HeaderProps> = ({ mflCode, facilityName }) => {
         </div>
         
         <div className="header-logo-container">
-          <img src="/coat-of-arms.png" alt="Right Crest" className="header-logo" />
+          <img src={`${basePath}/coat-of-arms.png`} alt="Right Crest" className="header-logo" />
         </div>
       </div>
 
