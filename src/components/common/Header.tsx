@@ -1,6 +1,5 @@
 import React from "react";
 import "../../App.css";
-const basePath = import.meta.env.VITE_BASE_FRONTEND_PATH as string;
 
 /**
  * Props for the Header component to display dynamic facility information
@@ -14,10 +13,9 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ mflCode, facilityName }) => {
   return (
     <div className="header-container">
-      {/* Main Official Letterhead Banner */}
       <div className="header-banner">
         <div className="header-logo-container">
-          <img src={`${basePath}/coat-of-arms.png`} alt="Left Crest" className="header-logo" />
+          <img src="/coat-of-arms.png" alt="Left Crest" className="header-logo" />
         </div>
         
         <div className="header-titles">
@@ -26,14 +24,11 @@ const Header: React.FC<HeaderProps> = ({ mflCode, facilityName }) => {
         </div>
         
         <div className="header-logo-container">
-          <img src={`${basePath}/coat-of-arms.png`} alt="Right Crest" className="header-logo" />
+          <img src="/coat-of-arms.png" alt="Right Crest" className="header-logo" />
         </div>
       </div>
 
-      {/* Global Facility Information Bar
-        This section only renders if a facility has been selected, providing continuous 
-        context (MFL Code and Facility Name) to the user regardless of the active tab.
-      */}
+      {/* Global Facility Information Bar */}
       {(mflCode || facilityName) && (
         <div 
           className="global-facility-info" 
